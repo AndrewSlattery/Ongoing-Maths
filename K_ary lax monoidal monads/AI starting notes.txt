@@ -1,0 +1,832 @@
+ Created with 3.1 Pro June 2, 2026 at 01:24 PM Published June 14, 2026 at 01:28 PM
+
+Hi! Please can you write up LaTeX snippets explaining the definitions of companions and conjoints in more detail, and one explaining what the beck chevalley condition is.
+
+
+\documentclass{article}
+
+\usepackage{amsmath, amsthm, amssymb}
+
+\usepackage{tikz-cd}
+
+\usepackage{enumerate}
+
+\usepackage{xcolor}
+
+
+\newtheorem{definition}{Definition}
+
+\newtheorem{lemma}{Lemma}
+
+\newtheorem{theorem}{Theorem}
+
+\newtheorem{remark}{Remark}
+
+
+\title{Fibred $\mathcal{K}$-ary Lax Monoidal Monads as Monoids in Equipments}
+
+\author{Andrew Slattery}
+
+\date{May 2026}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+
+We reformulate the definition of a fibred $\mathcal{K}$-ary lax monoidal monad by utilizing the double-categorical machinery of equipments. By isolating the ``monomial fragment'' of the ambient category, we demonstrate that all coherence axioms—including the notoriously unwieldy base-change compatibility—collapse into the single, elegant condition of being a monoid in the strict monoidal category of lax endo-transformations of the identity.
+
+\end{abstract}
+
+
+\section{Background: Equipments, Companions, and Conjoints}
+
+
+To absorb the base-change compatibility into the geometry of the ambient category, we work within a double category. A double category $\mathbb{D}$ consists of objects, tight (vertical) arrows, loose (horizontal) arrows, and square cells. 
+
+
+\begin{definition}[Companions and Conjoints]
+
+Let $f: A \to B$ be a tight arrow in a double category $\mathbb{D}$. 
+
+\begin{enumerate}
+
+    \item A loose arrow $f_*: A \nrightarrow B$ is a \emph{companion} of $f$ if there exist binding cells exhibiting a double-categorical adjunction where $f_*$ acts as a left adjoint to $f$ across the tight/loose divide.
+
+    \item A loose arrow $f^*: B \nrightarrow A$ is a \emph{conjoint} of $f$ if there exist binding cells exhibiting $f^*$ as a right adjoint to $f$.
+
+\end{enumerate}
+
+\end{definition}
+
+
+An \emph{equipment} (or fibrant double category) is a double category in which every tight arrow possesses both a companion and a conjoint. For our purposes, we will construct a partial equipment where conjoints exist exactly for our chosen arities.
+
+
+\section{The Arity Equipment $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$}
+
+
+Let $\mathcal{C}$ be a category with pullbacks, and let $\mathcal{K}$ be a specified class of ``arity'' morphisms containing all identities and closed under composition. We assume that for every $u: I \to J$ in $\mathcal{K}$, the base-change functor $u^* : \mathcal{C}/J \to \mathcal{C}/I$ has a right adjoint $\Pi_u$ (dependent product), and that the Beck-Chevalley condition holds for pullbacks involving $\mathcal{K}$.
+
+
+We define a double category $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$ realized internally to $\mathbb{C}\mathrm{at}$ (often viewed as the monomial fragment of the full polynomial equipment):
+
+
+\begin{itemize}
+
+    \item \textbf{Objects:} The slice categories $\mathcal{C}/I$ for each $I \in \mathcal{C}$.
+
+    \item \textbf{Tight Arrows:} Base change functors. For $w: I \to J$ in $\mathcal{C}$, the tight arrow is $w^* : \mathcal{C}/J \to \mathcal{C}/I$. (The vertical category is $\mathcal{C}^{\mathrm{op}}$).
+
+    \item \textbf{Loose Arrows:} Dependent products. For an arity $u: I \to J$ in $\mathcal{K}$, the loose arrow $I \nrightarrow J$ is $\Pi_u : \mathcal{C}/I \to \mathcal{C}/J$.
+
+    \item \textbf{Squares:} Natural transformations. For a pullback square in $\mathcal{C}$ exhibiting $u'$ as the pullback of $u \in \mathcal{K}$ along $w_1$, the square cell is the canonical Beck-Chevalley comparison $w_1^* \Pi_u \Rightarrow \Pi_{u'} w_2^*$.
+
+\end{itemize}
+
+
+\begin{lemma}
+
+The double category $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$ is a partial equipment. The fibrancy in the $\mathcal{K}$-direction is precisely witnessed by the adjunctions $u^* \dashv \Pi_u$. Specifically, for any $u \in \mathcal{K}$, the loose arrow $\Pi_u$ is the conjoint of the tight arrow $u^*$, and the Beck-Chevalley condition guarantees that the structural square cells over pullbacks are invertible.
+
+\end{lemma}
+
+
+\section{Monads as Monoids in $\mathbf{Lax}$}
+
+
+A monad $T$ acting inside each fibre $T_I : \mathcal{C}/I \to \mathcal{C}/I$ does not move objects in the double category; rather, it acts as a lax endo-transformation of the identity.
+
+
+\begin{definition}
+
+Let $\mathbf{Lax}(\mathrm{Id}_{\mathbb{W}}, \mathrm{Id}_{\mathbb{W}})$ be the strict monoidal category of lax double natural transformations from the identity double functor on $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$ to itself. The monoidal product is strict composition of transformations.
+
+\end{definition}
+
+
+A lax transformation $\sigma \in \mathbf{Lax}(\mathrm{Id}_{\mathbb{W}}, \mathrm{Id}_{\mathbb{W}})$ consists of:
+
+\begin{enumerate}
+
+    \item For each object $\mathcal{C}/I$, a tight endo-arrow $T_I : \mathcal{C}/I \to \mathcal{C}/I$.
+
+    \item For each loose arrow $\Pi_u$, a structural square cell $\phi_u : \Pi_u \circ T_I \Rightarrow T_J \circ \Pi_u$.
+
+\end{enumerate}
+
+This data must satisfy loose functoriality (compatibility with loose composition and identities) and tight naturality (compatibility with the squares of $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$).
+
+
+\subsection{The Mate Lemma}
+
+
+The primary advantage of this equipment is that Axiom 3 (Base Change Compatibility) ceases to be independent data. 
+
+
+\begin{lemma}[Mate Correspondence] \label{lem:mates}
+
+Let $u: I \to J$ be an arity in $\mathcal{K}$. Because $\Pi_u$ is the conjoint of $u^*$, we have an adjunction $u^* \dashv \Pi_u$. This adjunction induces a canonical mate bijection between natural transformations:
+
+\[
+
+\mathrm{Nat}(\Pi_u T_I, T_J \Pi_u) \xrightarrow{\cong} \mathrm{Nat}(T_I u^*, u^* T_J)
+
+\]
+
+\end{lemma}
+
+\begin{proof}
+
+Given $\phi_u : \Pi_u T_I \Rightarrow T_J \Pi_u$, we define its conjugate $\bar{\phi}_u : T_I u^* \Rightarrow u^* T_J$ via the composite:
+
+\begin{tikzcd}[column sep=large, row sep=large]
+
+\mathcal{C}/J \arrow[r, "T_J"] \arrow[d, "u^*"'] & \mathcal{C}/J \arrow[d, "u^*"] \\
+
+\mathcal{C}/I \arrow[r, "T_I"'] & \mathcal{C}/I
+
+\arrow[Rightarrow, "\bar\phi_u"{description}, from=1-2, to=2-1, shorten <=8pt, shorten >=8pt]
+
+\end{tikzcd}
+
+using the unit $\eta: \mathrm{Id} \Rightarrow \Pi_u u^*$ and counit $\epsilon: u^* \Pi_u \Rightarrow \mathrm{Id}$. The tight naturality of $\phi$ over the Beck-Chevalley squares in $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$ forces $\bar{\phi}_u$ to be invertible, making the lax transformation ``fibred''.
+
+\end{proof}
+
+
+\section{The Main Theorem}
+
+
+We can now cleanly restate the definition of a fibred $\mathcal{K}$-monoidal monad without referencing the unwieldy commutative diagrams of the standard definition.
+
+
+\begin{theorem}
+
+A fibred $\mathcal{K}$-ary lax monoidal monad on $\mathcal{C}$ is exactly a monoid in the strict monoidal category $\mathbf{Lax}(\mathrm{Id}_{\mathbb{W}}, \mathrm{Id}_{\mathbb{W}})$.
+
+\end{theorem}
+
+
+\begin{proof}
+
+Let $(T_\bullet, \phi)$ be the underlying transformation of the monoid, with monoid unit $\eta: \mathrm{Id} \Rightarrow T$ and multiplication $\mu: T \circ T \Rightarrow T$. The standard axioms translate directly to the internal double-categorical wiring of the monoid:
+
+\begin{itemize}
+
+    \item \textbf{Axioms 1 \& 2 (Arity Unitality and Associativity):} Corresponds precisely to the lax-functoriality of the transformation $T$ with respect to loose composition ($\Pi_v \circ \Pi_u \cong \Pi_{vu}$) and loose identities ($\Pi_{\mathrm{id}} = \mathrm{Id}$).
+
+    \item \textbf{Axiom 3 (Base Change / Arity Re-indexing):} Corresponds to the tight-naturality of the $\phi$ cells over the base-change squares of $\mathbb{W}_{\mathcal{K}}(\mathcal{C})$. By Lemma \ref{lem:mates}, the compatibility of $\phi_u$ over conjoints is conjugate to the compatibility of $\bar{\phi}_u$ over base-changes.
+
+    \item \textbf{Axioms 4 \& 5 (Unit and Multiplication Compatibility):} Corresponds to the requirement that $\eta$ and $\mu$ are \emph{modifications} (maps of lax transformations), meaning they commute properly with the structural cells $\phi_u$.
+
+\end{itemize}
+
+Thus, the single condition of being a monoid object in $\mathbf{Lax}(\mathrm{Id}_{\mathbb{W}}, \mathrm{Id}_{\mathbb{W}})$ exactly captures the data and coherence of the monad.
+
+\end{proof}
+
+
+\begin{remark}
+
+The lax/oplax asymmetry of monoidal monads perfectly mirrors the conjoint/companion asymmetry in the equipment. The genuine data $\phi$ lives over the conjoints $\Pi_u$ (which only exist for $u \in \mathcal{K}$). Dually, oplax structures live freely over the companions $\Sigma_u$, which exist for all maps. In short: the oplax direction is free, the lax direction is data.
+
+\end{remark}
+
+
+\end{document}
+
+Here are the expanded LaTeX snippets tailored to the notation and style of your document.
+1. Companions and Conjoints (Expanded Definition)
+
+You can replace your current Definition 1 with this expanded version. It explicitly details the binding cells and their boundaries, which provides a much clearer picture of the double-categorical adjunction you mention.
+Code snippet
+
+\begin{definition}[Companions and Conjoints]
+Let $f: A \to B$ be a tight arrow in a double category $\mathbb{D}$. 
+\begin{enumerate}
+    \item A loose arrow $f_*: A \nrightarrow B$ is a \emph{companion} of $f$ if there exist binding square cells exhibiting a double-categorical adjunction where $f_*$ acts as a left adjoint to $f$. Specifically, this requires:
+    \begin{itemize}
+        \item A unit cell $\eta$ with top boundary $\mathrm{id}_A$, bottom boundary $f_*$, left boundary $\mathrm{id}_A$, and right boundary $f$.
+        \item A counit cell $\epsilon$ with top boundary $f_*$, bottom boundary $\mathrm{id}_B$, left boundary $f$, and right boundary $\mathrm{id}_B$.
+    \end{itemize}
+    These cells must satisfy the double-categorical triangle identities: their vertical composite must be the identity cell on $f$, and their horizontal composite must be the identity cell on $f_*$.
+    
+    \item A loose arrow $f^*: B \nrightarrow A$ is a \emph{conjoint} of $f$ if there exist binding cells exhibiting $f^*$ as a right adjoint to $f$. This requires:
+    \begin{itemize}
+        \item A unit cell $\alpha$ with top boundary $\mathrm{id}_B$, bottom boundary $f^*$, left boundary $f$, and right boundary $\mathrm{id}_B$.
+        \item A counit cell $\beta$ with top boundary $f^*$, bottom boundary $\mathrm{id}_A$, left boundary $\mathrm{id}_A$, and right boundary $f$.
+    \end{itemize}
+    satisfying the analogous triangle equations under horizontal and vertical composition.
+\end{enumerate}
+\end{definition}
+
+2. The Beck-Chevalley Condition
+
+This snippet formalizes the Beck-Chevalley condition exactly as it relates to your arity class K and the base-change machinery. It fits best directly under your introduction of the "Arity Equipment" in Section 2, perhaps right before defining the components of WK​(C).
+Code snippet
+
+\begin{definition}[Beck-Chevalley Condition]
+Consider a pullback square in the ambient category $\mathcal{C}$:
+\begin{tikzcd}[column sep=large, row sep=large]
+I' \arrow[r, "u'"] \arrow[d, "w_1"'] & J' \arrow[d, "w_2"] \\
+I \arrow[r, "u"'] & J
+\end{tikzcd}
+where the bottom edge $u$ (and therefore $u'$) is an arity in $\mathcal{K}$. The adjunctions $u'^* \dashv \Pi_{u'}$ and $u^* \dashv \Pi_u$ induce a canonical mate natural transformation across the square, defined as the composite:
+\[
+\mathfrak{bc} : w_2^* \Pi_u \xrightarrow{\eta'} \Pi_{u'} u'^* w_2^* \cong \Pi_{u'} w_1^* u^* \xrightarrow{\epsilon} \Pi_{u'} w_1^*
+\]
+The \emph{Beck-Chevalley condition} is satisfied if, for all such pullback squares, this canonical comparison transformation $\mathfrak{bc}$ is a natural isomorphism.
+\end{definition}
+
+Implementation Notes for Your Document
+
+    Mate Transformations: The Beck-Chevalley snippet perfectly sets up your Lemma 2 (Mate Correspondence), as the bc transformation explicitly demonstrates how adjunctions across pullbacks generate the 2-cells that populate your equipment.
+
+    Symmetry: By expanding the companion/conjoint definition to show the boundaries of η, ϵ, α, and β, your concluding Remark 1 regarding the lax/oplax asymmetry has a much stronger foundation for the reader to lean on.
+	
+=====
+
+ If T preserves cofilitered limits, is the collection Tpi_J for all finite subsets J subset K (pi_J is the product projection from K-ary to J-ary products) jointly monic? If so, why?
+
+Yes, the collection of morphisms {T(πJ​)} for all finite subsets J⊂K is indeed jointly monic.
+
+This relies on two key category-theoretic facts: an infinite product can be expressed as a cofiltered limit of its finite subproducts, and any limit cone is automatically jointly monic.
+
+Here is the step-by-step proof of why this works.
+1. The Product as a Cofiltered Limit
+
+Let X=∏k∈K​Xk​ be an arbitrary K-ary product in a category C.
+
+Let Pfin​(K) be the poset of all finite subsets of K, ordered by inclusion. This poset is directed because for any two finite subsets J1​ and J2​, their union J1​∪J2​ is also a finite subset of K and contains both. Consequently, the opposite category Pfin​(K)op is cofiltered.
+
+For every J∈Pfin​(K), define the finite product XJ​=∏j∈J​Xj​.
+
+    For any inclusion J⊆J′, there is a canonical projection map pJ′,J​:XJ′​→XJ​.
+
+    This forms a diagram D:Pfin​(K)op→C.
+
+The original K-ary product X is exactly the limit of this cofiltered diagram. The limit cone is given by the family of projections from the main product to the finite subproducts:
+πJ​:X→XJ​
+2. Applying the Functor T
+
+You are given that the functor T:C→D preserves cofiltered limits.
+
+Because X=lim←​XJ​ is a cofiltered limit, applying T yields a new limit cone in the target category D. Specifically, T(X) is the limit of the diagram T∘D, and the limit cone consists of the maps:
+T(πJ​):T(X)→T(XJ​)
+3. Limit Cones are Jointly Monic
+
+To show that the collection {T(πJ​)} is jointly monic, we must show that for any object Y∈D and any two parallel morphisms f,g:Y→T(X), the following holds:
+If T(πJ​)∘f=T(πJ​)∘g for all finite J⊂K, then f=g.
+
+Here is how the universal property of limits guarantees this:
+
+    Assume we have morphisms f and g such that T(πJ​)∘f=T(πJ​)∘g for all J.
+
+    Let us define hJ​=T(πJ​)∘f.
+
+    The family of morphisms {hJ​:Y→T(XJ​)} forms a cone over the diagram T∘D with apex Y.
+
+    Because (T(X),{T(πJ​)}) is the limit of this diagram, the universal property of limits states that there exists a unique morphism u:Y→T(X) such that for all J:
+    T(πJ​)∘u=hJ​
+
+    By our initial assumption, both f and g satisfy this exact condition: T(πJ​)∘f=hJ​ and T(πJ​)∘g=hJ​.
+
+    Due to the uniqueness of u, we are forced to conclude that f=u and g=u.
+
+Therefore, f=g, which perfectly satisfies the definition of joint monicity.
+
+Thanks! Now, suppose that we define a K-ary lax monoidal functor T on the Cartesian category, where we have structure maps phi_K,X : prod_K TX_k -> T(prod_K X_k). Is it true that, assuming T preserves cofiltered limits, that such a structure is always unique if it exists? My idea for the proof uses naturality and the fact that the finitary structure maps phi_J,X for J finite subsets of K are unique by properties of Set.
+
+Yes, your idea is absolutely spot on. If you assume the finitary structure maps ϕJ​ are unique, then the K-ary structure map ϕK​ is uniquely determined by the exact property we just established: the joint monicity of the collection {T(πJ​)}.
+
+Here is exactly how your intuition about naturality and joint monicity locks together to form the proof.
+1. Compatibility with Projections (Naturality & Coherence)
+
+Because we are working with a lax monoidal functor on a Cartesian category, the tensor product is the categorical product. In a Cartesian monoidal category, projection maps like πJ​:∏k∈K​Xk​→∏j∈J​Xj​ are canonically built from identity morphisms (for k∈J) and the unique morphisms to the terminal object 1 (for k∈/J).
+
+By the naturality of the lax monoidal structure maps—and their necessary coherence with the unit map 1→T(1)—the structure map ϕK​ must be compatible with these projections.
+
+Let PK​=∏k∈K​T(Xk​) and PJ​=∏j∈J​T(Xj​). The projection πJ​ on the base category induces a corresponding standard projection pJ​:PK​→PJ​ between the products of the images.
+
+Coherence dictates that the following diagram must commute for every finite J⊂K:
+∏k∈K​T(Xk​)↓pJ​∏j∈J​T(Xj​)​ϕK​​ϕJ​​​T(∏k∈K​Xk​)↓T(πJ​)T(∏j∈J​Xj​)​
+
+This gives us the equation:
+T(πJ​)∘ϕK​=ϕJ​∘pJ​
+2. Applying the Uniqueness of Finitary Maps
+
+By your premise, you already know (via properties of Set or the specific nature of your functor) that the finitary structure maps ϕJ​ are unique.
+
+    The projection pJ​ is a standard categorical product projection, so it is fixed.
+
+    Since ϕJ​ is unique, the composition on the right side of our equation (ϕJ​∘pJ​) is a strictly fixed, unique morphism for every J.
+
+Therefore, for any valid K-ary structure map ϕK​, post-composing it with T(πJ​) must yield this specific, fixed result.
+3. Leveraging Joint Monicity
+
+This is where the previous result perfectly closes the trap.
+
+Suppose there were two valid K-ary structure maps, ϕK​ and ψK​. Because both must satisfy the coherence diagram above, we would have:
+T(πJ​)∘ϕK​=ϕJ​∘pJ​=T(πJ​)∘ψK​
+
+This equation holds for all finite subsets J⊂K.
+
+Because T preserves cofiltered limits, we already proved that the collection of morphisms {T(πJ​)} for all finite J⊂K is jointly monic. The definition of joint monicity states that if T(πJ​)∘ϕK​=T(πJ​)∘ψK​ for all J, then:
+ϕK​=ψK​
+Conclusion
+
+Your proof strategy is completely structurally sound. The uniqueness of the infinite structure map ϕK​ is entirely a consequence of the uniqueness of the finite maps ϕJ​, stitched together by the fact that T maps the cofiltered limit cone of the product into a jointly monic cone.
+
+Would it make sense to define a notion of "compact arity object" as a K for which the phi_K,X exist (and is therefore unique)? Or is this trivialised in that they always or never exist?
+
+It is a very natural mathematical instinct to try and use the existence of a structure map to define a property of the indexing object. However, in this specific setup, the definition is indeed trivialized: assuming the necessary products exist in your target category, the structure map ϕK​ will always exist.
+
+Because you assumed T preserves cofiltered limits, the universal property of the limit does not just guarantee uniqueness—it hands you existence for free.
+
+Here is the proof of why ϕK​ is forced to exist for any arbitrary arity K.
+1. Constructing a Cone from the Domain
+
+Let us assume your target category D has K-ary products, so the domain of our desired map, PK​=∏k∈K​T(Xk​), actually exists.
+
+For every finite subset J⊂K, we have:
+
+    The standard product projection in D: pJ​:PK​→∏j∈J​T(Xj​).
+
+    The finitary lax monoidal structure map (which we assume exists): ϕJ​:∏j∈J​T(Xj​)→T(∏j∈J​Xj​).
+
+We can compose these to create a family of morphisms originating from PK​:
+hJ​=ϕJ​∘pJ​:PK​→T(j∈J∏​Xj​)
+2. Verifying the Cone Condition
+
+To use the universal property of limits, we must show that the family {hJ​} forms a valid cone over the diagram of finite products T(∏j∈J​Xj​).
+
+Take any inclusion of finite subsets J⊂J′.
+
+    In the base category, we have the projection πJ′,J​:∏j∈J′​Xj​→∏j∈J​Xj​.
+
+    In the target category, applying T gives the transition map for our diagram: T(πJ′,J​).
+
+We need to prove that the triangle commutes: T(πJ′,J​)∘hJ′​=hJ​.
+Substitute our definition of hJ′​:
+T(πJ′,J​)∘hJ′​=T(πJ′,J​)∘ϕJ′​∘pJ′​
+
+Because the finitary maps ϕ form a lax monoidal structure, they are coherent with projections. This means T(πJ′,J​)∘ϕJ′​=ϕJ​∘π~J′,J​, where π~J′,J​ is the projection between the finite products in D.
+
+Substituting this back in:
+T(πJ′,J​)∘hJ′​=ϕJ​∘π~J′,J​∘pJ′​
+
+Because composing a projection from K to J′ with a projection from J′ to J is just the projection from K to J, we know π~J′,J​∘pJ′​=pJ​. Therefore:
+T(πJ′,J​)∘hJ′​=ϕJ​∘pJ​=hJ​
+
+The condition is satisfied. The collection {hJ​} forms a perfectly valid cone with apex PK​.
+3. The Universal Property Grants Existence
+
+We established previously that because T preserves cofiltered limits, T(∏k∈K​Xk​) is the exact limit of this diagram.
+
+By the definition of a limit, any valid cone over the diagram must factor uniquely through the limit object.
+
+Because {hJ​} is a valid cone, the universal property dictates that there exists a unique morphism from the apex PK​ to the limit object T(∏k∈K​Xk​) that makes everything commute.
+
+That unique morphism is precisely your K-ary structure map:
+ϕK​:k∈K∏​T(Xk​)→T(k∈K∏​Xk​)
+Conclusion
+
+The existence of ϕK​ is a direct topological consequence of the existence of the finitary maps ϕJ​ and the preservation of cofiltered limits. Therefore, "compact arity object" defined this way simply describes any set K for which the product ∏k∈K​T(Xk​) exists in D.
+
+=====
+
+ A monoidal monad on a Cartesian category necessarily has structure maps phi_J,X : prod_J TX_j → T(prod_J X_j) for all finite sets J.
+
+If K-ary products exist for some infinite set K, is there necessarily a structure map phi_K,X?
+The Short Answer
+
+No. If K is an infinite set, a monoidal monad on a Cartesian category does not necessarily have an infinite structure map ϕK,X​:∏k∈K​TXk​→T(∏k∈K​Xk​).
+Why Finite Arities Work (and Infinite Ones Don't)
+
+A monoidal monad T on a Cartesian category is equipped with two foundational structure maps:
+
+    A binary map: ϕX,Y​:TX×TY→T(X×Y)
+
+    A nullary map: ϕ∅​:1→T(1)
+
+For any finite set J, the map ϕJ​ is constructed by iteratively composing the binary map ϕX,Y​. Because this construction relies on standard mathematical induction, it is strictly limited to finite arities.
+
+To extend this to an infinite set K, the monad T would need to possess additional limit-preserving properties (specifically, it would need to interact continuously with infinite products). The standard axioms of a monoidal monad simply do not require or guarantee this behavior.
+A Concrete Counterexample
+
+We can clearly see why this fails by looking at Set (a Cartesian category that possesses all infinite products).
+
+Consider the List monad T, where T(X) is the set of all finite lists of elements from X. This is a well-known monoidal monad where the binary map ϕ takes two finite lists and returns a finite list of pairs.
+
+Let K=N (the infinite set of natural numbers).
+
+    The Domain ∏k∈N​T(Xk​): An element here is an infinite sequence of finite lists.
+
+    The Codomain T(∏k∈N​Xk​): An element here is a single finite list whose elements are infinite sequences.
+
+If you attempt to construct ϕN​, the structural mismatch becomes obvious. Suppose you have an infinite sequence of lists, and each list contains exactly 2 elements. To "zip" or sequence these together preserving all combinations, you would need to produce an uncountably infinite number of infinite sequences. However, the codomain dictates that your output must be a single finite list.
+
+There is no structural, natural way to map an infinite sequence of finite lists into a finite list of infinite sequences without violating the naturality or unit coherence conditions required of a monoidal structure map. Therefore, ϕK​ cannot exist in the general case.
+
+Is the result true for all K if T preserves connected limits?
+The Short Answer
+
+Yes. If the monoidal monad T preserves connected limits, the result holds for all infinite arities K. You can rigorously construct the infinite structure map ϕK,X​ by expressing the infinite product as a connected limit of finite products.
+Why Connected Limits Bridge the Gap
+
+To see why this works, we have to look at how infinite products can be built from finite pieces using inverse limits.
+
+Here is the step-by-step breakdown of the construction:
+
+    Step 1: Expressing the infinite product as a limit.
+    Let K be an infinite set, and let Pfin​(K) be the set of all finite subsets of K. For any two finite sets where J⊆J′, there is a natural projection map between their products:
+    pJ′,J​:j∈J′∏​Xj​→j∈J∏​Xj​
+
+    This inverse system allows us to define the infinite product over K as the limit of all its finite sub-products:
+    k∈K∏​Xk​≅J∈Pfin​(K)lim​​​j∈J∏​Xj​​
+
+    Step 2: Proving the limit is connected.
+    For a limit to be "connected," its indexing category must be connected (meaning any two objects can be joined by a zigzag of morphisms). The poset Pfin​(K) is directed because any two finite subsets have a finite union that contains them both. Because it is directed, the opposite category used for the inverse limit is co-directed, which is a connected category. Therefore, this inverse limit is a connected limit.
+
+    Step 3: Utilizing the finite structure maps.
+    Because T is a monoidal monad, we already know we have the structure maps for all finite subsets J:
+    ϕJ​:j∈J∏​TXj​→T​j∈J∏​Xj​​
+
+    Thanks to the naturality and unit coherence axioms of monoidal categories, these ϕJ​ maps commute perfectly with the projections pJ′,J​. This means the family of finite maps forms a compatible cone, allowing us to take the limit of the maps themselves:
+    lim​ϕJ​:Jlim​​​j∈J∏​TXj​​→Jlim​​T​j∈J∏​Xj​​
+
+    Step 4: Applying the connected limit preservation.
+    The domain of this new limit map is simply the infinite product of the T-images: ∏k∈K​TXk​.
+    For the codomain, this is where your premise comes in. Because T preserves connected limits, we can pull the limit inside the functor:
+    Jlim​​T​j∈J∏​Xj​​≅T​Jlim​​j∈J∏​Xj​​≅T(k∈K∏​Xk​)
+
+By composing the limit of the finite maps with this isomorphism, you get exactly the infinite structure map you need:
+ϕK​:k∈K∏​TXk​→T(k∈K∏​Xk​)
+
+By preserving connected limits, the monad T is continuous enough to seamlessly stitch the infinitely many finite arity maps together into a single infinite arity map.
+
+=====
+
+Hi! I'm working on defining an arbitrary arity monoidal monad in a Cartesian context. (work attached). I'd like to see if there's any nice way of looking at these notions that I've missed so far. I'd also like to work out how to restate these definitions for relative monads.2 JunClaude responded: Nice setup — the two definitions are clean, and the fibred one in particular is closer to a known "shape" than you may have flagged.Synthesised categorical frameworks and formulated relative monad restatementSynthesised categorical frameworks and formulated relative monad restatementNice setup — the two definitions are clean, and the fibred one in particular is closer to a known "shape" than you may have flagged. Let me give you three lenses on what you've written, then do the relative-monad translation, which has one genuinely forced change.
+The structure, conceptually: a K\mathcal{K}
+K-commutative monad
+The slogan for the whole thing is: **ϕ\phi
+ϕ is the joint/parallel-evaluation map, and you are asking TT
+T to be *commutative* for the K\mathcal{K}
+K-ary product.** In the binary case ϕ2 ⁣:TX×TY→T(X×Y)\phi_{2}\colon TX\times TY\to T(X\times Y)
+ϕ2​:TX×TY→T(X×Y) together with monoidal η,μ\eta,\mu
+η,μ is exactly a *symmetric (commutative) monoidal monad* for (C,×)(\mathcal C,\times)
+(C,×) in Kock's sense; on a cartesian closed base this is equivalently a commutative strong monad (Kock 1970/72; Moggi 1991). Your axioms 1–5 are the arity-graded version of precisely that data. So nothing exotic is happening — it's "commutative monad", indexed by a class of arities.
+A few cartesian-specific observations that I think sharpen the picture:
+
+**Re-indexing along *all* maps is what "cartesian" buys you.** In a general symmetric monoidal category the index of an nn
+n-ary tensor is only functorial in *bijections* (the symmetric-group action). Your axiom 3 asks naturality in arbitrary f ⁣:K→Lf\colon K\to L
+f:K→L — diagonals and projections included — and that is available exactly because in a cartesian category every object is canonically a comonoid, so ∏k(−)\prod_{k}(-)
+∏k​(−) is functorial in the index via duplication/deletion. Worth stating explicitly: the difference between your "cartesian K\mathcal K
+K-monoidal monad" and a "symmetric K\mathcal K
+K-monoidal monad" is precisely *reindexing along all of K\mathcal K
+K vs. along isos only*. Your single axiom 3 also subsumes ordinary commutativity (take ff
+f a permutation).
+**The finitary part is not new data.** If K\mathcal K
+K is the closure of {1,2}\{1,2\}
+{1,2} (and 00
+0, if present) under the dependent-sum composite and reindexing, then the nn
+n-ary ϕ\phi
+ϕ for finite nn
+n are forced by associativity + reindexing, and a K\mathcal K
+K-ary lax monoidal monad is *equivalent* to an ordinary commutative monad. The definition earns its keep only when K\mathcal K
+K contains arities that aren't finitely generated — i.e. **infinite products**. Countable arities for a Giry-/measure-type monad give you infinite independent joints, and there ϕ\phi
+ϕ is genuine extra structure (it's essentially a Kolmogorov-extension datum, not derivable from ϕ2\phi_2
+ϕ2​). I'd guess that's the case you actually care about; it's the one where the class K\mathcal K
+K does real work.
+**The oplax partner is free, and it splits EM from Kleisli.** In cartesian C\mathcal C
+C there is always a *canonical* oplax structure ψK=⟨Tπk⟩k ⁣:T(∏Xk)→∏TXk\psi_{K}=\langle T\pi_k\rangle_k\colon T(\prod X_k)\to\prod TX_k
+ψK​=⟨Tπk​⟩k​:T(∏Xk​)→∏TXk​, making (T,ψ)(T,\psi)
+(T,ψ) an oplax K\mathcal K
+K-monoidal monad for nothing. So your ϕ\phi
+ϕ is the lax direction = the data. The two directions land in different places:
+
+the canonical ψ\psi
+ψ is what equips the Eilenberg–Moore category with genuine K\mathcal K
+K-ary *products* (algebra structure on ∏Ak\prod A_k
+∏Ak​ via T(∏Ak)→ψ∏TAk→∏ak∏AkT(\prod A_k)\xrightarrow{\psi}\prod TA_k\xrightarrow{\prod a_k}\prod A_k
+T(∏Ak​)ψ​∏TAk​∏ak​​∏Ak​), and UTU^T
+UT preserves them strictly;
+your ϕ\phi
+ϕ is what makes the *Kleisli* category K\mathcal K
+K-ary *monoidal* (tensor = the product on objects, not a categorical product) with FTF_T
+FT​ strong K\mathcal K
+K-monoidal.
+
+ϕ\phi
+ϕ and ψ\psi
+ψ being mutually inverse is the much stronger "TT
+T preserves K\mathcal K
+K-products" condition, which generically fails (probability monads are the standard non-example). I find this oplax-free/lax-data split a clarifying way to hold the whole thing.
+
+The fibred form is a monad in a 2-category of lax transformations
+This is the lens I think you've half-stated but not packaged. Let K\mathbb K
+K be your subcategory of maps and Π ⁣:K→Cat\Pi\colon\mathbb K\to\mathbf{Cat}
+Π:K→Cat the dependent-product pseudofunctor I↦C/II\mapsto \mathcal C/I
+I↦C/I, u↦Πuu\mapsto \Pi_u
+u↦Πu​. Then your three "structure" conditions say:
+
+(T∙,ϕ)(T_\bullet,\phi)
+(T∙​,ϕ) is a lax natural endotransformation Π⇒Π\Pi\Rightarrow\Pi
+Π⇒Π — components TIT_I
+TI​, structure 2-cells ϕu ⁣:ΠuTI⇒TJΠu\phi_u\colon \Pi_u T_I\Rightarrow T_J\Pi_u
+ϕu​:Πu​TI​⇒TJ​Πu​. Lax-unitality of this transformation ==
+= your Arity Unitality; lax-compatibility with composition of arities (via ΠvΠu≅Πvu\Pi_v\Pi_u\cong\Pi_{vu}
+Πv​Πu​≅Πvu​) ==
+= your Arity Associativity.
+η,μ\eta,\mu
+η,μ are modifications Id⇛T\mathrm{Id}\Rrightarrow T
+Id⇛T, TT⇛TTT\Rrightarrow T
+TT⇛T — the modification axioms are exactly your Unit and Multiplication Compatibility.
+
+Putting it together: **a fibred K\mathcal K
+K-monoidal monad is exactly a monad on the object Π\Pi
+Π in the 2-category PsFun(K,Cat)lax\mathbf{PsFun}(\mathbb K,\mathbf{Cat})_{\mathrm{lax}}
+PsFun(K,Cat)lax​** of pseudofunctors, lax natural transformations and modifications — equivalently a monoid in the strict monoidal category Endlax(Π)\mathrm{End}_{\mathrm{lax}}(\Pi)
+Endlax​(Π) of lax endotransformations of Π\Pi
+Π under composition. Your five elementary conditions stop looking like five things: {1,2}\{1,2\}
+{1,2} = "lax transformation", {4,5}\{4,5\}
+{4,5} = "η,μ\eta,\mu
+η,μ modifications", and the monad laws live in the hom-category Endlax(Π)\mathrm{End}_{\mathrm{lax}}(\Pi)
+Endlax​(Π).
+Two riders:
+
+**Where Beck–Chevalley lives.** The above is the *covariant* (Πu\Pi_u
+Πu​) story. Your Base Change Compatibility (and its over-11
+1 shadow, the elementary Arity Re-indexing) is the extra requirement that all of this is *fibred* — natural in the contravariant u∗u^*
+u∗ direction too. The honest ambient home is therefore not PsFun(K,Cat)\mathbf{PsFun}(\mathbb K,\mathbf{Cat})
+PsFun(K,Cat) but the proarrow-equipment / framed-bicategory structure carrying both u∗u^*
+u∗ and Πu\Pi_u
+Πu​, where Beck–Chevalley is the compatibility 2-cell. If you ever want a single axiom-free statement, that's where to put it: a monad on Π\Pi
+Π in the equipment of C\mathcal C
+C-indexed categories with K\mathcal K
+K-lax indexed functors.
+**It's a lax distributive law / a strength over polynomials.** The 2-cell ϕu ⁣:ΠuTI⇒TJΠu\phi_u\colon\Pi_u T_I\Rightarrow T_J\Pi_u
+ϕu​:Πu​TI​⇒TJ​Πu​ has the shape of a distributive law ΠT⇒TΠ\Pi T\Rightarrow T\Pi
+ΠT⇒TΠ — TT
+T "distributing over" the dependent-product action. Since your K\mathcal K
+K is precisely a class of maps with right adjoints to base change and Beck–Chevalley, you are in the setting of polynomial functors (Gambino–Kock), and ϕ\phi
+ϕ is exactly a *strength of TT
+T over the polynomial endofunctors* / the statement that TT
+T lifts to the bicategory of polynomials. That's the framing I'd reach for if you want to connect this to operads or to "TT
+T lifts to K\mathcal K
+K-product categories" cleanly.
+
+(One terminological caution: this is *not* "monads with arities" in the Berger–Melliès–Weber sense — that's about presenting a monad via a dense subcategory and nerve theorems. Different use of "arity". Your K\mathcal K
+K indexes products, theirs indexes a Nerve.)
+Restating for relative monads
+Here the cartesian story survives almost verbatim, with one change that is genuinely forced by typing, and one new piece of input data.
+Setup: a root J ⁣:A→CJ\colon\mathcal A\to\mathcal C
+J:A→C, with A,C\mathcal A,\mathcal C
+A,C having K\mathcal K
+K-products, and a JJ
+J-relative monad (T,η,(−)∗)(T,\eta,(-)^*)
+(T,η,(−)∗) in the sense of Altenkirch–Chapman–Uustalu — so T ⁣:A→CT\colon\mathcal A\to\mathcal C
+T:A→C (not an endofunctor), ηA ⁣:JA→TA\eta_A\colon JA\to TA
+ηA​:JA→TA, extension (−)∗ ⁣:C(JA,TB)→C(TA,TB)(-)^*\colon\mathcal C(JA,TB)\to\mathcal C(TA,TB)
+(−)∗:C(JA,TB)→C(TA,TB). The monoidal datum is the obvious one,
+
+
+ϕK,X ⁣:∏k∈KTXk⟶T ⁣(∏k∈KAXk),\phi_{K,X}\colon \textstyle\prod_{k\in K}TX_k \longrightarrow T\!\big(\textstyle\prod^{\mathcal A}_{k\in K}X_k\big),ϕK,X​:∏k∈K​TXk​⟶T(∏k∈KA​Xk​),
+with the product inside TT
+T formed in A\mathcal A
+A and the outer product in C\mathcal C
+C.
+What changes:
+
+**New input: JJ
+J must itself be K\mathcal K
+K-monoidal.** You cannot even *state* unit compatibility without comparison maps ȷK,X ⁣:∏kJXk→J(∏kAXk)\jmath_{K,X}\colon\prod_k JX_k\to J(\prod^{\mathcal A}_k X_k)
+K,X​:∏k​JXk​→J(∏kA​Xk​). The cleanest case is JJ
+J *strong* K\mathcal K
+K-monoidal (it preserves the products — true when JJ
+J is a dense/full inclusion closed under them), and I'll write it that way; a lax JJ
+J works with the arrows turned the obvious way.
+**The multiplication square cannot be transcribed — it's ill-typed.** In your axiom 5 the term ϕK,TX\phi_{K,TX}
+ϕK,TX​ needs TT
+T applied to TXkTX_k
+TXk​, but TXk∈CTX_k\in\mathcal C
+TXk​∈C and T ⁣:A→CT\colon\mathcal A\to\mathcal C
+T:A→C cannot eat it. So multiplication compatibility *must* be re-expressed through the extension operator (equivalently, through μˉ ⁣:LanJT⋅T⇒T\bar\mu\colon\mathrm{Lan}_J T\cdot T\Rightarrow T
+μˉ​:LanJ​T⋅T⇒T).
+
+Axioms 1–3 (Unitality, Associativity, Re-indexing) are unchanged in shape — just read inner products in A\mathcal A
+A, outer in C\mathcal C
+C. The two that change:
+4′ — Unit compatibility (η ⁣:J⇒T\eta\colon J\Rightarrow T
+η:J⇒T is K\mathcal K
+K-monoidal):
+latex\begin{tikzcd}
+\prod_{k\in K} J X_k \arrow[r, "\prod_k \eta_{X_k}"] \arrow[d, "\jmath_{K,X}"'] & \prod_{k\in K} T X_k \arrow[d, "\phi_{K,X}"] \\
+J\!\left(\prod_{k\in K} X_k\right) \arrow[r, "\eta_{\prod X}"'] & T\!\left(\prod_{k\in K} X_k\right)
+\end{tikzcd}
+5′ — Bind compatibility (monoidality of Kleisli extension): for a family gk∈C(JXk,TYk)g_k\in\mathcal C(JX_k,TY_k)
+gk​∈C(JXk​,TYk​) with extensions gk∗ ⁣:TXk→TYkg_k^{*}\colon TX_k\to TY_k
+gk∗​:TXk​→TYk​, set g^:=ϕK,Y∘(∏kgk)∘ȷK,X−1∈C(J∏Xk, T∏Yk)\widehat g := \phi_{K,Y}\circ(\prod_k g_k)\circ \jmath_{K,X}^{-1}\in\mathcal C\big(J\prod X_k,\,T\prod Y_k\big)
+g​:=ϕK,Y​∘(∏k​gk​)∘K,X−1​∈C(J∏Xk​,T∏Yk​). Then
+latex\begin{tikzcd}
+\prod_{k} T X_k \arrow[r, "\prod_k g_k^{*}"] \arrow[d, "\phi_{K,X}"'] & \prod_{k} T Y_k \arrow[d, "\phi_{K,Y}"] \\
+T\!\left(\prod_{k} X_k\right) \arrow[r, "(\widehat{g})^{*}"'] & T\!\left(\prod_{k} Y_k\right)
+\end{tikzcd}
+This does reduce to your original axiom 5 when J=IdJ=\mathrm{Id}
+J=Id: expand gk∗=μTgkg_k^{*}=\mu Tg_k
+gk∗​=μTgk​ and (g^)∗=μTg^(\widehat g)^{*}=\mu T\widehat g
+(g​)∗=μTg​, use naturality of ϕ\phi
+ϕ in XX
+X to slide T(∏gk)∘ϕK,X=ϕK,TY∘∏TgkT(\prod g_k)\circ\phi_{K,X}=\phi_{K,TY}\circ\prod Tg_k
+T(∏gk​)∘ϕK,X​=ϕK,TY​∘∏Tgk​, and the common ∏Tgk\prod Tg_k
+∏Tgk​ cancels, leaving exactly ϕK,Y∘∏μ=μ∘TϕK,Y∘ϕK,TY\phi_{K,Y}\circ\prod\mu = \mu\circ T\phi_{K,Y}\circ\phi_{K,TY}
+ϕK,Y​∘∏μ=μ∘TϕK,Y​∘ϕK,TY​. So 5′ is the right generalisation, and it makes precise that "multiplication is monoidal" becomes "**Kleisli extension is monoidal**".
+Abstractly, the target is the same monoid statement as before, relativised. ACU realise a JJ
+J-relative monad as a monoid in the skew-monoidal category ([A,C],⋄J,J)([\mathcal A,\mathcal C],\diamond_J,J)
+([A,C],⋄J​,J) with F⋄JG=LanJF∘GF\diamond_J G=\mathrm{Lan}_J F\circ G
+F⋄J​G=LanJ​F∘G. A **K\mathcal K
+K-ary lax monoidal JJ
+J-relative monad is then a monoid for ⋄J\diamond_J
+⋄J​ inside the category K-LaxMon[A,C]\mathcal K\text{-}\mathbf{LaxMon}[\mathcal A,\mathcal C]
+K-LaxMon[A,C] of K\mathcal K
+K-ary lax monoidal functors** — which requires exactly the two things above, that the unit object JJ
+J be a K\mathcal K
+K-monoidal functor and that ⋄J\diamond_J
+⋄J​ restrict to K\mathcal K
+K-monoidal functors. The interaction of those two structures (the JJ
+J-skew one and the pointwise K\mathcal K
+K-product one) is a *duoidal/substitution-monoidal* phenomenon, and the closest existing technology is Fiore–Gambino–Hyland–Winskel's "substitution monoidal structures" and relative pseudomonads; for the strictly formal "monad relative to JJ
+J" packaging, Arkor–McDermott's formal theory of relative monads is where I'd look to give the fibred/equipment version (replace the self-indexing Π\Pi
+Π by a JJ
+J-relative indexed structure and the fibred monad by a relative one). I wouldn't claim a ready-made theorem there, but that's the natural home.
+
+One thing that would let me push the right branch harder: is your K\mathcal K
+K meant to include genuinely infinite arities (the interesting, non-finitely-generated case), and on the relative side, are you thinking of an analytic example (Giry/measure-type, JJ
+J a strong-monoidal inclusion) or a syntactic one (clones/abstract syntax, where ⋄J\diamond_J
+⋄J​ is the substitution tensor)?
+
+If you want, I can write any of the three lenses up as a proper LaTeX section to drop into your document — the "monoid in Endlax(Π)\mathrm{End}_{\mathrm{lax}}(\Pi)
+Endlax​(Π)" reformulation is the one that would most compress your axiom list.
+You said: Can you write out the specific pro-arrow equipment that would make the axioms nice?Can you write out the specific pro-arrow equipment that would make the axioms nice?2 Jun2 / 2Claude responded: Good question — this is exactly the case where an equipment earns its keep, because the thing it buys you is precisely your axiom 3.Architected equipment structure to unify categorical axioms elegantlyArchitected equipment structure to unify categorical axioms elegantlyGood question — this is exactly the case where an equipment earns its keep, because the thing it buys you is precisely your axiom 3. Recall from last time that "(T,ϕ)(T,\phi)
+(T,ϕ) is a monad on Π\Pi
+Π in PsFun(K,Cat)ℓ\mathbf{PsFun}(\mathbb K,\mathbf{Cat})_\ell
+PsFun(K,Cat)ℓ​" captured axioms 1, 2, 4, 5 but could not even *express* base-change compatibility — the pseudofunctor Π\Pi
+Π only remembers the covariant Πu\Pi_u
+Πu​ direction. The equipment is the minimal refinement that restores the base-change (tight) direction, and then mates make axiom 3 a *consequence* of ϕ\phi
+ϕ rather than independent data.
+The equipment WK(C)\mathbb{W}_{\mathcal K}(\mathcal C)
+WK​(C)
+Realise it inside Cat\mathbb{C}\mathrm{at}
+Cat (categories, functors, profunctors):
+
+Objects: the fibres C/I\mathcal C/I
+C/I, one per I∈CI\in\mathcal C
+I∈C.
+Tight (vertical) arrows: base changes. The tight arrow attached to w ⁣:I→Jw\colon I\to J
+w:I→J in C\mathcal C
+C is w∗ ⁣:C/J→C/Iw^{*}\colon\mathcal C/J\to\mathcal C/I
+w∗:C/J→C/I, so the vertical category is Cop\mathcal C^{\mathrm{op}}
+Cop acting by pullback. These are the reindexing maps; "TT
+T fibred" means TT
+T commutes with them.
+Loose (horizontal) arrows: dependent products. For u ⁣:I→Ju\colon I\to J
+u:I→J in K\mathcal K
+K, the loose arrow I\xslashedrightarrowJI\xslashedrightarrow{}J
+I\xslashedrightarrowJ is Πu ⁣:C/I→C/J\Pi_u\colon\mathcal C/I\to\mathcal C/J
+Πu​:C/I→C/J. Loose composition is ΠvΠu≅Πvu\Pi_v\Pi_u\cong\Pi_{vu}
+Πv​Πu​≅Πvu​ (using K\mathcal K
+K closed under composition), loose unit Πid=Id\Pi_{\mathrm{id}}=\mathrm{Id}
+Πid​=Id. So the loose bicategory H(W)H(\mathbb W)
+H(W) is your Π\Pi
+Π.
+**Squares:** for a pullback in C\mathcal C
+C exhibiting u′u'
+u′ as the base change of u∈Ku\in\mathcal K
+u∈K along ww
+w, the square cell is the canonical comparison w∗Πu⇒Πu′w′∗w^{*}\Pi_u\Rightarrow\Pi_{u'}w'^{*}
+w∗Πu​⇒Πu′​w′∗.
+
+Companions and conjoints come straight from the adjoint chain Σu⊣u∗⊣Πu\Sigma_u\dashv u^{*}\dashv\Pi_u
+Σu​⊣u∗⊣Πu​: the **conjoint** of the tight arrow u∗u^{*}
+u∗ is the loose arrow Πu\Pi_u
+Πu​, and its **companion** is Σu\Sigma_u
+Σu​. So W\mathbb W
+W is fibrant exactly because the indexing has these adjoints, and
+Beck–Chevalley  =  the square cells over pullbacks are invertible  =  W is an equipment.\textbf{Beck--Chevalley} \;=\; \text{the square cells over pullbacks are invertible} \;=\; \mathbb W \text{ is an equipment.}Beck–Chevalley=the square cells over pullbacks are invertible=W is an equipment.
+This WK(C)\mathbb W_{\mathcal K}(\mathcal C)
+WK​(C) is the "monomial fragment" of Gambino–Kock's polynomial equipment PolyC\mathbb P\mathrm{oly}_{\mathcal C}
+PolyC​ — keep only the polynomials I←=I→uJ←=JI\xleftarrow{=}I\xrightarrow{u}J\xleftarrow{=}J
+I=​Iu​J=​J with u∈Ku\in\mathcal K
+u∈K — and the Π\Pi
+Π-free part (companions plus conjoints from base change alone) is the span equipment Span(C)\mathbb S\mathrm{pan}(\mathcal C)
+Span(C) sitting inside.
+The monad as a monoid of lax transformations
+One wrinkle to clear first: TT
+T acts *inside* each fibre (TI ⁣:C/I→C/IT_I\colon\mathcal C/I\to\mathcal C/I
+TI​:C/I→C/I), so it is **not** a double endofunctor of W\mathbb W
+W — that would move objects. It is a **lax endo-transformation of the identity**. A lax transformation σ ⁣:IdW⇒IdW\sigma\colon\mathrm{Id}_{\mathbb W}\Rightarrow\mathrm{Id}_{\mathbb W}
+σ:IdW​⇒IdW​ assigns
+
+to each object a tight endo — here TIT_I
+TI​;
+to each loose arrow a square — here, at Πu\Pi_u
+Πu​, precisely your ϕu ⁣:ΠuTI⇒TJΠu\phi_u\colon\Pi_u T_I\Rightarrow T_J\Pi_u
+ϕu​:Πu​TI​⇒TJ​Πu​;
+and these must be compatible with the squares of W\mathbb W
+W (tight-naturality).
+
+Such transformations form a strict monoidal category Lax(IdW,IdW)\mathbf{Lax}(\mathrm{Id}_{\mathbb W},\mathrm{Id}_{\mathbb W})
+Lax(IdW​,IdW​) under composition, with unit the identity transformation (components idC/I\mathrm{id}_{\mathcal C/I}
+idC/I​). The statement is then as compact as one could want:
+
+A fibred K\mathcal K
+K-monoidal monad on C\mathcal C
+C is a monoid in Lax(IdW,IdW)\mathbf{Lax}(\mathrm{Id}_{\mathbb W},\mathrm{Id}_{\mathbb W})
+Lax(IdW​,IdW​).
+
+The underlying transformation is (T∙,ϕ)(T_\bullet,\phi)
+(T∙​,ϕ); the monoid unit Id⇒T\mathrm{Id}\Rightarrow T
+Id⇒T is η\eta
+η; the multiplication T∘T⇒TT\circ T\Rightarrow T
+T∘T⇒T is μ\mu
+μ. The dictionary to your axioms:
+
+lax-functoriality of the transformation in loose composition and units = **Arity Associativity + Arity Unitality** (1–2), since loose composition *is* the arity composite M=∑kJkM=\sum_k J_k
+M=∑k​Jk​ and the loose unit is the 11
+1-ary arity;
+η,μ\eta,\mu
+η,μ being modifications (maps of lax transformations) = Unit + Multiplication Compatibility (4–5);
+compatibility of the ϕ\phi
+ϕ-cells with the equipment's squares = Base Change Compatibility / Arity Re-indexing (3).
+
+Compared with the earlier PsFun(K,Cat)\mathbf{PsFun}(\mathbb K,\mathbf{Cat})
+PsFun(K,Cat) packaging, the only new ingredient is the third bullet — and that is exactly what the tight/square structure of W\mathbb W
+W adds.
+Why axiom 3 stops being a separate check: mates
+The third bullet is not independent data. The adjunction u∗⊣Πuu^{*}\dashv\Pi_u
+u∗⊣Πu​ (which holds precisely because u∈Ku\in\mathcal K
+u∈K) gives a mate bijection
+Nat ⁣(ΠuTI, TJΠu)  ≅  Nat ⁣(TI u∗, u∗ TJ),ϕu  ⟷  ϕˉu,\mathrm{Nat}\!\big(\Pi_u T_I,\,T_J\Pi_u\big)\;\cong\;\mathrm{Nat}\!\big(T_I\,u^{*},\,u^{*}\,T_J\big),\qquad \phi_u\;\longleftrightarrow\;\bar\phi_u,Nat(Πu​TI​,TJ​Πu​)≅Nat(TI​u∗,u∗TJ​),ϕu​⟷ϕˉ​u​,
+so that ϕu\phi_u
+ϕu​ and the base-change comparison ϕˉu\bar\phi_u
+ϕˉ​u​ are conjugate:
+latex\begin{tikzcd}[column sep=large, row sep=large]
+\mathcal{C}/I \arrow[r, "T_I"] \arrow[d, "\Pi_u"'] & \mathcal{C}/I \arrow[d, "\Pi_u"] \\
+\mathcal{C}/J \arrow[r, "T_J"'] & \mathcal{C}/J
+\arrow[Rightarrow, "\phi_u"{description}, from=2-1, to=1-2, shorten <=8pt, shorten >=8pt]
+\end{tikzcd}
+\qquad\overset{\text{mate}}{\longleftrightarrow}\qquad
+\begin{tikzcd}[column sep=large, row sep=large]
+\mathcal{C}/J \arrow[r, "T_J"] \arrow[d, "u^*"'] & \mathcal{C}/J \arrow[d, "u^*"] \\
+\mathcal{C}/I \arrow[r, "T_I"'] & \mathcal{C}/I
+\arrow[Rightarrow, "\bar\phi_u"{description}, from=1-2, to=2-1, shorten <=8pt, shorten >=8pt]
+\end{tikzcd}
+The right-hand cell ϕˉu ⁣:TIu∗⇒u∗TJ\bar\phi_u\colon T_I u^{*}\Rightarrow u^{*}T_J
+ϕˉ​u​:TI​u∗⇒u∗TJ​ is exactly the base-change comparison in your axiom 3. So once ϕ\phi
+ϕ is given on loose arrows, the tight-naturality cells are *determined as mates* — you never write them down twice — and the equipment's fibrancy is precisely the coherence that makes this determination consistent. Beck–Chevalley is the statement that ϕˉu\bar\phi_u
+ϕˉ​u​ is invertible (its inverse being the cartesian iso), i.e. that the lax transformation is in fact "fibred". The net effect: your five-plus-base-change conditions collapse to "monoid in Lax(IdW,IdW)\mathbf{Lax}(\mathrm{Id}_{\mathbb W},\mathrm{Id}_{\mathbb W})
+Lax(IdW​,IdW​)", and the base-change clause is the conjugate of ϕ\phi
+ϕ, not an independent axiom.
+Two payoffs worth noting
+
+**The lax/oplax asymmetry is the conjoint/companion asymmetry.** The genuine data ϕ\phi
+ϕ lives over the *conjoints* Πu\Pi_u
+Πu​, which exist only for u∈Ku\in\mathcal K
+u∈K. Dually, the canonical oplax/projection structure ψ\psi
+ψ from last time lives over the *companions* Σu\Sigma_u
+Σu​, which exist for **every** uu
+u — companions are free in any equipment. That is exactly the slogan "the oplax direction is free, the lax direction is data", now read off the geometry of W\mathbb W
+W: data on conjoints, freebie on companions.
+**The relative case slots in by changing the equipment, not the recipe.** For a JJ
+J-relative monad you run the same construction in Prof\mathbb P\mathrm{rof}
+Prof (or the equipment of relative monads in Arkor–McDermott's formal theory), with JJ
+J a distinguished tight arrow. The loose Πu\Pi_u
+Πu​ are unchanged; the vertical monad becomes a JJ
+J-relative one (a loose monad / monad-with-extension, so μ\mu
+μ is the relative bind we discussed); and the required K\mathcal K
+K-monoidality of JJ
+J is just the statement that the tight arrow JJ
+J is compatible with the loose (companion/conjoint) monoidal structure. The mate trick — "compatibility with Πu\Pi_u
+Πu​ ⟺ compatibility with u∗u^{*}
+u∗" — survives verbatim, since it only uses u∗⊣Πuu^{*}\dashv\Pi_u
+u∗⊣Πu​.
+
+One thing that decides how clean W\mathbb W
+W is to state: is your C\mathcal C
+C locally cartesian closed with K=\mathcal K=
+K= all maps (so W\mathbb W
+W is genuinely the monomial fragment of the full PolyC\mathbb P\mathrm{oly}_{\mathcal C}
+PolyC​, and V(W)=CopV(\mathbb W)=\mathcal C^{\mathrm{op}}
+V(W)=Cop), or is K\mathcal K
+K a proper subclass (so W\mathbb W
+W is the partial-product equipment, fibrant only "in the K\mathcal K
+K-direction")? If you tell me which, I can fold this into your document as a fibred-form section with the Lax(IdW,IdW)\mathbf{Lax}(\mathrm{Id}_{\mathbb W},\mathrm{Id}_{\mathbb W})
+Lax(IdW​,IdW​) proposition stated precisely and the mate lemma written out.
+
+=====

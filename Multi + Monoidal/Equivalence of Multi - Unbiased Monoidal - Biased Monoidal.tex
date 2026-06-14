@@ -1,0 +1,642 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+
+\usepackage{tikz-cd}
+
+\newtheorem*{proposition}{Proposition}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\Set}{\mathrm{Set}}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Nat}{Nat}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand{\notes}[1]{\color{blue} #1 \color{black}}
+
+\newcommand{\longvec}[1]{\bar{\bar{#1}}} % For the long vector of k objects
+
+\begin{document}
+	
+We define the notions of biased and unbiased monoidal category in the enriched setting. We also define (representable) multicategories in this setting and show that each structure gives rise to the others. \notes{need to consider maps and hopefully give equivalences of structures.}
+	
+	Let $\V$ be a cartesian closed category, and let $\C$ be a $\V$-category.
+	
+	We utilise the following notational shorthand:
+	\begin{itemize}
+		\item For global elements of hom-objects, we write $f \in \C(A,B)$ or $f : A \to B$ to mean $f$ has type $1 \to \C(A,B)$.
+		\item For $g : B \to C$ and $h : Z \to A$ we denote by 
+		\[g \circ - : \C(A,B) \to \C(A,C),\ - \circ h : \C(A,B) \to \C(Z,B)\] the following composites:
+		\begin{align*}
+			\C(A,B) &\cong 1 \times \C(A,B) \xrightarrow{g \times 1} \C(B,C) \times \C(A,B) \xrightarrow{\text{comp}} \C(A,C),\\
+			\C(A,B) &\cong \C(A,B) \times 1 \xrightarrow{1 \times h} \C(A,B) \times \C(Z,A) \xrightarrow{\text{comp}} \C(Z,B).
+		\end{align*}
+		
+		For $g : B \to C$ and $h : A \to B$, the global element $g \circ h : A \to C$ is equal to both $(g \circ -)(h)$ and $(- \circ h)(g)$, both equalling the composite
+		\[1 \cong 1 \times 1 \xrightarrow{g \times h} \C(B,C) \times \C(A,B) \xrightarrow{\text{comp}} \C(A,C).\]
+	\end{itemize}
+	
+	Since $\V$ is cartesian closed, it has finite products. Thus the product category $\C^n$ is also $\V$-enriched, with
+	\[\C^n(\bar X,\bar Y) := \prod_{i=1}^n \C(X_i,Y_i).\]
+	
+	\begin{definition}
+		A \emph{$\V$-enriched unbiased monoidal category} (or \emph{unbiased monoidal $\V$-category}) comprises:
+		\begin{itemize}
+			\item a $\V$-category $\C$,
+			\item for $n \geq 0$, $\V$-functors $\bigotimes^n : \C^n \to \C$ such that $\bigotimes^1 = 1_\C$, and 
+			\item  for $n \geq 0$ and $k_1,...,k_n \geq 0$, $\V$-natural isomorphisms
+			\[\beta_{n,\bar k} : \bigotimes^n \circ \prod_{i=1}^n \bigotimes^{k_i} \to \bigotimes^k\]
+			(where $k = \sum_{i=1}^n k_i$) from
+			\[\bigotimes^n \circ \prod_{i=1}^n \bigotimes^{k_i} : \prod_{i=1}^n \C^{k_i} \to \C^n \to \C\]  to
+			\[\bigotimes^k : \C^k \to \C,\]
+		\end{itemize} such that $\beta_{n,\bar 1} = 1_{\bigotimes^n}$ and such that the following diagram commutes for $k = \sum_{i=1}^n k_i$, $l_i = \sum_{j=1}^{k_i} l_{ij}$ and $l = \sum_{i=1}^k l_i$.
+		% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGJpZ290aW1lc15uIFxcY2lyYyBcXHByb2RfaV5uKFxcYmlnb3RpbWVzXntrX2l9IFxcY2lyYyBcXHByb2Rfal57a19pfSBcXGJpZ290aW1lc157bF97aWp9fSkiXSxbMiwwLCJcXGJpZ290aW1lc15uIFxcY2lyYyBcXHByb2RfaV5uXFxiaWdvdGltZXNee2xfaX0iXSxbMiwyLCJcXGJpZ290aW1lc15sIl0sWzAsMSwiXFxiaWdvdGltZXNebiBcXGNpcmMgXFxwcm9kX2leblxcYmlnb3RpbWVzXntrX2l9IFxcY2lyYyBcXHByb2Rfe2ksan1eayBcXGJpZ290aW1lc157bF97aWp9fSJdLFswLDIsIlxcYmlnb3RpbWVzXmsgXFxjaXJjIFxccHJvZF97aSxqfV5rIFxcYmlnb3RpbWVzXntsX3tpan19Il0sWzEsMiwiXFxiZXRhX3tuLFxcYmFyIGx9Il0sWzAsMywiXFxzaW0iLDJdLFszLDQsIlxcYmV0YV97bixcXGJhciBrfSBcXGNpcmMgXFxwcm9kX3tpLGp9XmsgXFxiaWdvdGltZXNee2xfe2lqfX0iLDJdLFs0LDIsIlxcYmV0YV97ayxcXGJhciBsfSIsMl0sWzAsMSwiXFxiaWdvdGltZXNebiBcXGNpcmMgXFxwcm9kIFxcYmV0YV97a19pLFxcYmFyIGxfaX0iXV0=
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{\bigotimes^n \circ \prod_i^n(\bigotimes^{k_i} \circ \prod_j^{k_i} \bigotimes^{l_{ij}})} \&\& {\bigotimes^n \circ \prod_i^n\bigotimes^{l_i}} \\
+			{\bigotimes^n \circ \prod_i^n\bigotimes^{k_i} \circ \prod_{i,j}^k \bigotimes^{l_{ij}}} \\
+			{\bigotimes^k \circ \prod_{i,j}^k \bigotimes^{l_{ij}}} \&\& {\bigotimes^l}
+			\arrow["{\bigotimes^n \circ \prod \beta_{k_i,\bar l_i}}", from=1-1, to=1-3]
+			\arrow["\sim"', from=1-1, to=2-1]
+			\arrow["{\beta_{n,\bar l}}", from=1-3, to=3-3]
+			\arrow["{\beta_{n,\bar k} \circ \prod_{i,j}^k \bigotimes^{l_{ij}}}"', from=2-1, to=3-1]
+			\arrow["{\beta_{k,\bar l}}"', from=3-1, to=3-3]
+		\end{tikzcd}\]
+	\end{definition}
+	
+	For brevity, we may omit arity and composition symbols, and we furthermore denote Cartesian products by bars over symbols. Thus, we write
+	\[\beta : \bigotimes \bar\bigotimes \to \bigotimes\]
+	making the following diagram commute.
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJ7XFxiaWdvdGltZXN9e1xcYmFyXFxiaWdvdGltZXN9e1xcYmFyXFxiaWdvdGltZXN9Il0sWzAsMSwie1xcYmlnb3RpbWVzfVxcYmFyXFxiaWdvdGltZXMiXSxbMSwwLCJ7XFxiaWdvdGltZXN9XFxiYXJcXGJpZ290aW1lcyJdLFsxLDEsIlxcYmlnb3RpbWVzIl0sWzAsMiwiXFxiaWdvdGltZXNcXGJhclxcYmV0YSJdLFsyLDMsIlxcYmV0YSJdLFsxLDMsIlxcYmV0YSIsMl0sWzAsMSwiXFxiZXRhXFxiYXJcXGJpZ290aW1lcyIsMl1d
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{{\bigotimes}{\bar\bigotimes}{\bar\bigotimes}} \& {{\bigotimes}\bar\bigotimes} \\
+		{{\bigotimes}\bar\bigotimes} \& \bigotimes
+		\arrow["{\bigotimes\bar\beta}", from=1-1, to=1-2]
+		\arrow["{\beta\bar\bigotimes}"', from=1-1, to=2-1]
+		\arrow["\beta", from=1-2, to=2-2]
+		\arrow["\beta"', from=2-1, to=2-2]
+	\end{tikzcd}\]
+	Since $\bigotimes^n$ is a $\V$-functor, it comes with maps
+	\[\C^n(\bar X,\bar Y) \xrightarrow{\bigotimes^n_{\bar X,\bar Y}} \C(\bigotimes\bar X,\bigotimes\bar Y)\] for all $\bar X$, $\bar Y$ in $\C$. These respect identities and composition, which is to say that $\bigotimes^1_{X,X}(1_X) = 1_{\bigotimes^1 X}$ and that the following diagram commutes.
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXENebihcXGJhciBZLFxcYmFyIFopIFxcdGltZXMgXFxDXm4oXFxiYXIgWCxcXGJhciBZKSJdLFswLDEsIlxcQyhcXGJpZ290aW1lc1xcYmFyIFksXFxiaWdvdGltZXNcXGJhciBaKSBcXHRpbWVzIFxcQyhcXGJpZ290aW1lc1xcYmFyIFgsXFxiaWdvdGltZXNcXGJhciBZKSJdLFsxLDAsIlxcQ15uKFxcYmFyIFgsXFxiYXIgWikiXSxbMSwxLCJcXEMoXFxiaWdvdGltZXNcXGJhciBYLFxcYmlnb3RpbWVzXFxiYXIgWikiXSxbMCwxLCJcXGJpZ290aW1lc15uX3tcXGJhciBZLFxcYmFyIFp9IFxcdGltZXMgXFxiaWdvdGltZXNebl97XFxiYXIgWCxcXGJhciBZfSIsMl0sWzAsMiwiXFx0ZXh0e2NvbXB9Il0sWzEsMywiXFx0ZXh0e2NvbXB9IiwyXSxbMiwzLCJcXGJpZ290aW1lc15uX3tcXGJhciBYLFxcYmFyIFp9Il1d
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C^n(\bar Y,\bar Z) \times \C^n(\bar X,\bar Y)} \& {\C^n(\bar X,\bar Z)} \\
+		{\C(\bigotimes\bar Y,\bigotimes\bar Z) \times \C(\bigotimes\bar X,\bigotimes\bar Y)} \& {\C(\bigotimes\bar X,\bigotimes\bar Z)}
+		\arrow["{\text{comp}}", from=1-1, to=1-2]
+		\arrow["{\bigotimes^n_{\bar Y,\bar Z} \times \bigotimes^n_{\bar X,\bar Y}}"', from=1-1, to=2-1]
+		\arrow["{\bigotimes^n_{\bar X,\bar Z}}", from=1-2, to=2-2]
+		\arrow["{\text{comp}}"', from=2-1, to=2-2]
+	\end{tikzcd}\]	
+	Since $\beta$ is a $\V$-natural transformation, the following naturality square commutes.
+	% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXENeayhcXGJhcntcXGJhciBYfSxcXGJhcntcXGJhciBZfSkiXSxbMywwLCJcXEMoe1xcYmlnb3RpbWVzfVxcYmFyXFxiaWdvdGltZXNcXGJhcntcXGJhciBYfSx7XFxiaWdvdGltZXN9XFxiYXJcXGJpZ290aW1lc1xcYmFye1xcYmFyIFl9KSJdLFswLDEsIlxcQyhcXGJpZ290aW1lc1xcYmFye1xcYmFyIFh9LFxcYmlnb3RpbWVzXFxiYXJ7XFxiYXIgWX0pIl0sWzMsMSwiXFxDKHtcXGJpZ290aW1lc31cXGJhclxcYmlnb3RpbWVzXFxiYXJ7XFxiYXIgWH0sXFxiaWdvdGltZXNcXGJhcntcXGJhciBZfSkiXSxbMSwwLCJcXENebihcXGJhclxcYmlnb3RpbWVzXFxiYXJ7XFxiYXIgWH0sXFxiYXJcXGJpZ290aW1lc1xcYmFye1xcYmFyIFl9KSJdLFswLDIsIlxcYmlnb3RpbWVzX3tcXGJhcntcXGJhciBYfSxcXGJhcntcXGJhciBZfX0iLDJdLFsxLDMsIlxcYmV0YV97XFxiYXJ7XFxiYXIgWX19IFxcY2lyYyAtIl0sWzIsMywiLSBcXGNpcmMgXFxiZXRhX3tcXGJhcntcXGJhciBYfX0iLDJdLFswLDQsIlxcYmFyXFxiaWdvdGltZXNfe1xcYmFye1xcYmFyIFh9LFxcYmFye1xcYmFyIFl9fSJdLFs0LDEsIlxcYmlnb3RpbWVzX3t7XFxiYXJcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSx7XFxiYXJcXGJpZ290aW1lc31cXGJhcntcXGJhciBZfX0iXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C^k(\bar{\bar X},\bar{\bar Y})} \& {\C^n(\bar\bigotimes\bar{\bar X},\bar\bigotimes\bar{\bar Y})} \&\& {\C({\bigotimes}\bar\bigotimes\bar{\bar X},{\bigotimes}\bar\bigotimes\bar{\bar Y})} \\
+		{\C(\bigotimes\bar{\bar X},\bigotimes\bar{\bar Y})} \&\&\& {\C({\bigotimes}\bar\bigotimes\bar{\bar X},\bigotimes\bar{\bar Y})}
+		\arrow["{\bar\bigotimes_{\bar{\bar X},\bar{\bar Y}}}", from=1-1, to=1-2]
+		\arrow["{\bigotimes_{\bar{\bar X},\bar{\bar Y}}}"', from=1-1, to=2-1]
+		\arrow["{\bigotimes_{{\bar\bigotimes}\bar{\bar X},{\bar\bigotimes}\bar{\bar Y}}}", from=1-2, to=1-4]
+		\arrow["{\beta_{\bar{\bar Y}} \circ -}", from=1-4, to=2-4]
+		\arrow["{- \circ \beta_{\bar{\bar X}}}"', from=2-1, to=2-4]
+	\end{tikzcd}\]	
+	
+	\begin{definition}
+		A \emph{$\V$-enriched biased monoidal category} (or \emph{biased monoidal $\V$-category}) comprises:
+		\begin{itemize}
+			\item a $\V$-category $\C$,
+			\item a unit $I \in \ob\C$ and $\V$-functor $- \otimes - : \C^2 \to \C$, and
+			\item $\V$-natural isomorphisms with components
+			\begin{align*}
+				\lambda_A &: I \otimes A \to A\\
+				\rho_A &: A \otimes I \to A\\
+				\alpha_{A,B,C} &: (A \otimes B) \otimes C \to A \otimes (B \otimes C)
+			\end{align*}
+		\end{itemize}
+		such that the two diagrams
+		% https://q.uiver.app/#q=WzAsOCxbMCwwLCIoKC0gXFxvdGltZXMgLSkgXFxvdGltZXMgLSkgXFxvdGltZXMgLSJdLFsxLDAsIigtIFxcb3RpbWVzIC0pIFxcb3RpbWVzICgtIFxcb3RpbWVzIC0pIl0sWzEsMiwiLSBcXG90aW1lcyAoLSBcXG90aW1lcyAoLSBcXG90aW1lcyAtKSkiXSxbMCwxLCIoLSBcXG90aW1lcyAoLSBcXG90aW1lcyAtKSkgXFxvdGltZXMgLSJdLFswLDIsIi0gXFxvdGltZXMgKCgtIFxcb3RpbWVzIC0pIFxcb3RpbWVzIC0pIl0sWzAsMywiKC0gXFxvdGltZXMgSSkgXFxvdGltZXMgLSJdLFsxLDMsIi0gXFxvdGltZXMgKEkgXFxvdGltZXMgLSkiXSxbMSw0LCItIFxcb3RpbWVzIC0gIl0sWzAsMSwiXFxhbHBoYSJdLFsxLDIsIlxcYWxwaGEiXSxbMCwzLCJcXGFscGhhIiwyXSxbMyw0LCJcXGFscGhhIiwyXSxbNCwyLCJcXGFscGhhIiwyXSxbNSw2LCJcXGFscGhhIl0sWzYsNywiXFxsYW1iZGEiXSxbNSw3LCJcXHJobyIsMl1d
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{((- \otimes -) \otimes -) \otimes -} \& {(- \otimes -) \otimes (- \otimes -)} \\
+			{(- \otimes (- \otimes -)) \otimes -} \\
+			{- \otimes ((- \otimes -) \otimes -)} \& {- \otimes (- \otimes (- \otimes -))} \\
+			{(- \otimes I) \otimes -} \& {- \otimes (I \otimes -)} \\
+			\& {- \otimes - }
+			\arrow["\alpha", from=1-1, to=1-2]
+			\arrow["\alpha"', from=1-1, to=2-1]
+			\arrow["\alpha", from=1-2, to=3-2]
+			\arrow["\alpha"', from=2-1, to=3-1]
+			\arrow["\alpha"', from=3-1, to=3-2]
+			\arrow["\alpha", from=4-1, to=4-2]
+			\arrow["\rho"', from=4-1, to=5-2]
+			\arrow["\lambda", from=4-2, to=5-2]
+		\end{tikzcd}\] commute.
+	\end{definition}
+	
+	\begin{proposition}
+		Every unbiased monoidal $\V$-category is a biased monoidal $\V$-category, and vice versa.
+	\end{proposition}
+	\begin{proof}
+		Let $(\C,\bigotimes,\beta)$ be an unbiased monoidal $\V$-category. We define
+		\begin{align*}
+			I &:= \bigotimes^0(*),\\
+			-\otimes- &:= \bigotimes^2,\\
+			\lambda &:= \beta_{2,(0,1)},\\
+			\rho &:= \beta_{2,(1,0)},\\
+			\alpha &:= \beta^{-1}_{2,(1,2)} \circ \beta_{2,(2,1)}.
+		\end{align*}
+		The following commuting diagrams verify the pentagon and triangle axioms, using the single coherence axiom for $\beta$.
+		% https://q.uiver.app/#q=WzAsMTEsWzAsMCwiKCh7XFxjZG90fXtcXGNkb3R9KXtcXGNkb3R9KXtcXGNkb3R9Il0sWzQsMCwiKHtcXGNkb3R9e1xcY2RvdH0pKHtcXGNkb3R9e1xcY2RvdH0pIl0sWzQsMiwie1xcY2RvdH0oe1xcY2RvdH0oe1xcY2RvdH17XFxjZG90fSkpIl0sWzAsMiwiKHtcXGNkb3R9KHtcXGNkb3R9e1xcY2RvdH0pKXtcXGNkb3R9Il0sWzIsMiwie1xcY2RvdH0oKHtcXGNkb3R9e1xcY2RvdH0pe1xcY2RvdH0pIl0sWzAsMSwiKHtcXGNkb3R9e1xcY2RvdH17XFxjZG90fSl7XFxjZG90fSJdLFsyLDAsIih7XFxjZG90fXtcXGNkb3R9KXtcXGNkb3R9e1xcY2RvdH0iXSxbNCwxLCJ7XFxjZG90fXtcXGNkb3R9KHtcXGNkb3R9e1xcY2RvdH0pIl0sWzEsMiwie1xcY2RvdH0oe1xcY2RvdH17XFxjZG90fSl7XFxjZG90fSJdLFszLDIsIntcXGNkb3R9KHtcXGNkb3R9e1xcY2RvdH17XFxjZG90fSkiXSxbMiwxLCJ7XFxjZG90fXtcXGNkb3R9e1xcY2RvdH17XFxjZG90fSJdLFswLDUsIlxcYmV0YSIsMl0sWzUsMywiXFxiZXRhXnstMX0iLDJdLFswLDYsIlxcYmV0YSJdLFs2LDEsIlxcYmV0YV57LTF9Il0sWzEsNywiXFxiZXRhIl0sWzcsMiwiXFxiZXRhXnstMX0iXSxbMyw4LCJcXGJldGEiLDJdLFs4LDQsIlxcYmV0YV57LTF9IiwyXSxbNCw5LCJcXGJldGEiLDJdLFs5LDIsIlxcYmV0YV57LTF9IiwyXSxbNiwxMCwiXFxiZXRhIiwyXSxbNSwxMCwiXFxiZXRhIl0sWzgsMTAsIlxcYmV0YSJdLFs5LDEwLCJcXGJldGEiLDJdLFs3LDEwLCJcXGJldGEiLDJdXQ==
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{(({\cdot}{\cdot}){\cdot}){\cdot}} \&\& {({\cdot}{\cdot}){\cdot}{\cdot}} \&\& {({\cdot}{\cdot})({\cdot}{\cdot})} \\
+			{({\cdot}{\cdot}{\cdot}){\cdot}} \&\& {{\cdot}{\cdot}{\cdot}{\cdot}} \&\& {{\cdot}{\cdot}({\cdot}{\cdot})} \\
+			{({\cdot}({\cdot}{\cdot})){\cdot}} \& {{\cdot}({\cdot}{\cdot}){\cdot}} \& {{\cdot}(({\cdot}{\cdot}){\cdot})} \& {{\cdot}({\cdot}{\cdot}{\cdot})} \& {{\cdot}({\cdot}({\cdot}{\cdot}))}
+			\arrow["\beta", from=1-1, to=1-3]
+			\arrow["\beta"', from=1-1, to=2-1]
+			\arrow["{\beta^{-1}}", from=1-3, to=1-5]
+			\arrow["\beta"', from=1-3, to=2-3]
+			\arrow["\beta", from=1-5, to=2-5]
+			\arrow["\beta", from=2-1, to=2-3]
+			\arrow["{\beta^{-1}}"', from=2-1, to=3-1]
+			\arrow["\beta"', from=2-5, to=2-3]
+			\arrow["{\beta^{-1}}", from=2-5, to=3-5]
+			\arrow["\beta"', from=3-1, to=3-2]
+			\arrow["\beta", from=3-2, to=2-3]
+			\arrow["{\beta^{-1}}"', from=3-2, to=3-3]
+			\arrow["\beta"', from=3-3, to=3-4]
+			\arrow["\beta"', from=3-4, to=2-3]
+			\arrow["{\beta^{-1}}"', from=3-4, to=3-5]
+		\end{tikzcd}\]
+		% https://q.uiver.app/#q=WzAsNixbMCwwLCIoe1xcY2RvdH1JKXtcXGNkb3R9Il0sWzIsMCwie1xcY2RvdH0oSXtcXGNkb3R9KSJdLFsxLDEsIntcXGNkb3R9e1xcY2RvdH0iXSxbMSwwLCJ7XFxjZG90fUl7XFxjZG90fSJdLFsyLDEsIntcXGNkb3R9e1xcY2RvdH0iXSxbMCwxLCJ7XFxjZG90fXtcXGNkb3R9Il0sWzAsMywiXFxiZXRhIl0sWzMsMSwiXFxiZXRhXnstMX0iXSxbMSw0LCJcXGJldGEiXSxbMCw1LCJcXGJldGEiLDJdLFs1LDIsIlxcYmV0YSIsMl0sWzQsMiwiXFxiZXRhIl0sWzMsMiwiXFxiZXRhIiwyXV0=
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{({\cdot}I){\cdot}} \& {{\cdot}I{\cdot}} \& {{\cdot}(I{\cdot})} \\
+			{{\cdot}{\cdot}} \& {{\cdot}{\cdot}} \& {{\cdot}{\cdot}}
+			\arrow["\beta", from=1-1, to=1-2]
+			\arrow["\beta"', from=1-1, to=2-1]
+			\arrow["{\beta^{-1}}", from=1-2, to=1-3]
+			\arrow["\beta"', from=1-2, to=2-2]
+			\arrow["\beta", from=1-3, to=2-3]
+			\arrow["\beta"', from=2-1, to=2-2]
+			\arrow["\beta", from=2-3, to=2-2]
+		\end{tikzcd}\]
+		
+		In the other direction, let $(\C,I,\otimes,\lambda,\rho,\alpha)$ be a biased monoidal $\V$-category. We define $\V$-functors $\bigotimes^n$ as follows:
+		\begin{align*}
+			\bigotimes^0 &: \C^0 \to \C : * \mapsto I,\\
+			\bigotimes^1 &: \C^1 \to \C := 1_\C,\\
+			\bigotimes^2 &: \C^2 \to \C := - \otimes -,\ \text{and}\\
+			\bigotimes^n &: \C^n \to \C := - \otimes \bigotimes^{n-1} -\ \text{for}\ n \geq 3. 
+		\end{align*}
+		For the $\V$-natural isomorphisms $\beta_{n,\bar k}$ we use Mac Lane's Coherence Theorem for monoidal categories. This lets us define
+		\[\beta_{n,\bar k} : \bigotimes^n \circ \prod_{i=1}^n \bigotimes^{k_i} \to \bigotimes^k\] as the unique arrow formed from the composition of $\lambda$, $\rho$ and $\alpha$ maps mediating between the two bracketings. The same theorem further ensures that the $\beta$ coherence diagram commutes.
+	\end{proof}
+	
+	\begin{definition}
+		A \emph{$\V$-enriched multicategory} (or $\V$-multicategory) $\C$ comprises
+		\begin{itemize}
+			\item a collection of objects $\ob\C$,
+			\item for $n \geq 0$ and objects $\bar X,Y$ a hom-object $\C(\bar X;Y)$ in $\V$,
+			\item for each object $X$ an identity $1_X : X \to X$, and
+			\item for  $n \geq 0$, $k_1, \dots, k_n \geq 0$ and objects $\bar{\bar X},\bar Y,Z$, a composition morphism in $\V$
+			\[\circ : \C(\bar Y; Z) \times \prod_{i=1}^{n} \C(\bar X_i; Y_i) \to \C(\bar{\bar X}; Z).\]
+		\end{itemize}
+		This data must satisfy associativity and unitality axioms expressed as commutative diagrams in $\V$.
+		\begin{itemize}
+			\item Associativity: for $n \geq 0$, $k_1, \dots, k_n \geq 0$, $l_1,...,l_{k_i} \geq 0$ and objects $\bar{\bar{\bar{W}}},\bar{\bar{X}},\bar{Y},Z$, the following diagram commutes.
+		\end{itemize}
+		\begin{small}
+			% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXEMoXFxiYXIgWTsgWikgXFx0aW1lcyBcXHByb2RcXGxpbWl0c19pXm4gXFxDKFxcYmFyIFhfaTsgWV9pKSBcXHRpbWVzIFxccHJvZFxcbGltaXRzX2leblxccHJvZFxcbGltaXRzX2pee2tfaX1cXEMoXFxiYXIgV197aWp9OyBYX3tpan0pIl0sWzEsMCwiXFxDKFxcYmFye1xcYmFye1h9fTtaKSBcXHRpbWVzIFxccHJvZFxcbGltaXRzX2leblxccHJvZFxcbGltaXRzX2pee2tfaX1cXEMoXFxiYXIgV197aWp9OyBYX3tpan0pIl0sWzAsMSwiXFxDKFxcYmFyIFk7IFopIFxcdGltZXMgXFxwcm9kXFxsaW1pdHNfaV5uIFxcQyhcXGJhcntcXGJhciBXfV9pOyBZX2kpIl0sWzEsMSwiXFxDKFxcYmFye1xcYmFye1xcYmFyIFd9fTtaKSJdLFsyLDMsIntcXGNpcmN9IiwyXSxbMCwxLCJ7XFxjaXJjfSBcXHRpbWVzIDEiXSxbMSwzLCJ7XFxjaXJjfSJdLFswLDIsIjEgXFx0aW1lcyBcXHByb2R7XFxjaXJjfSIsMl1d
+			\[\begin{tikzcd}[ampersand replacement=\&]
+				{\C(\bar Y; Z) \times \prod\limits_i^n \C(\bar X_i; Y_i) \times \prod\limits_i^n\prod\limits_j^{k_i}\C(\bar W_{ij}; X_{ij})} \& {\C(\bar{\bar{X}};Z) \times \prod\limits_i^n\prod\limits_j^{k_i}\C(\bar W_{ij}; X_{ij})} \\
+				{\C(\bar Y; Z) \times \prod\limits_i^n \C(\bar{\bar W}_i; Y_i)} \& {\C(\bar{\bar{\bar W}};Z)}
+				\arrow["{{\circ} \times 1}", from=1-1, to=1-2]
+				\arrow["{1 \times \prod{\circ}}"', from=1-1, to=2-1]
+				\arrow["{{\circ}}", from=1-2, to=2-2]
+				\arrow["{{\circ}}"', from=2-1, to=2-2]
+			\end{tikzcd}\]
+		\end{small}
+		
+		\begin{itemize}
+			\item Unitality: for $n \geq 0$ and objects $\bar X,Y$, the following diagrams commute. 
+		\end{itemize}
+		\begin{small}
+			% https://q.uiver.app/#q=WzAsNixbMCwwLCIxIFxcdGltZXMgXFxDKFxcYmFyIFg7WSkiXSxbMiwwLCJcXEMoWTtZKSBcXHRpbWVzIFxcQyhcXGJhciBYO1kpIl0sWzIsMSwiXFxDKFxcYmFyIFg7WSkiXSxbMCwyLCJcXEMoXFxiYXIgWDtZKSBcXHRpbWVzIDEiXSxbMiwyLCJcXEMoXFxiYXIgWDtZKSBcXHRpbWVzIFxccHJvZFxcbGltaXRzX2lebiBcXEMoWF9pO1hfaSkiXSxbMiwzLCJcXEMoXFxiYXIgWDtZKSJdLFswLDIsIntcXHNpbX0iLDJdLFswLDEsIjFfWSBcXHRpbWVzIDEiXSxbMSwyLCJ7XFxjaXJjfSJdLFszLDQsIjEgXFx0aW1lcyBcXHByb2QgMV97WF9pfSJdLFs0LDUsIntcXGNpcmN9Il0sWzMsNSwie1xcc2ltfSIsMl1d
+			\[\begin{tikzcd}[ampersand replacement=\&]
+				{1 \times \C(\bar X;Y)} \&\& {\C(Y;Y) \times \C(\bar X;Y)} \\
+				\&\& {\C(\bar X;Y)} \\
+				{\C(\bar X;Y) \times 1} \&\& {\C(\bar X;Y) \times \prod\limits_i^n \C(X_i;X_i)} \\
+				\&\& {\C(\bar X;Y)}
+				\arrow["{1_Y \times 1}", from=1-1, to=1-3]
+				\arrow["{{\sim}}"', from=1-1, to=2-3]
+				\arrow["{{\circ}}", from=1-3, to=2-3]
+				\arrow["{1 \times \prod 1_{X_i}}", from=3-1, to=3-3]
+				\arrow["{{\sim}}"', from=3-1, to=4-3]
+				\arrow["{{\circ}}", from=3-3, to=4-3]
+			\end{tikzcd}\]
+		\end{small}
+	\end{definition}
+	
+	\begin{remark}
+		The objects and unary hom-objects of a $\V$-enriched multicategory $\C$, with the inherited identities and composition, form a $\V$-category which we call $\C_1$.
+	\end{remark}
+	
+	\begin{definition}
+		An arrow \[u : \bar X \to Y\] is called \emph{universal} if precomposition with $u$ defines an isomorphism
+		\[- \circ u : \C(Y;Z) \xRightarrow{\sim} \C(\bar X;Y)\] natural in $Z$.
+	\end{definition}
+	
+	\begin{remark}
+		If $u : \bar X \to Y$ and $v : \bar X \to Z$ are both universal arrows for the same list of objects, then there is a unique isomorphism $a : Y \to Z$ with $a \circ u = v$, given by the Yoneda lemma applied to the composite
+		\[\C(Z;W) \xrightarrow{- \circ v} \C(\bar X;W) \xrightarrow{(-\circ u)^{-1}} \C(Y;W).\]
+	\end{remark}
+	
+	\begin{definition}
+		A $\V$-multicategory is called \emph{representable} if 
+		\begin{enumerate}
+			\item for $n \geq 0$ and objects $\bar X$ in $\C$, there is an object $\bigotimes^n\bar X$ and a universal arrow
+			$u_{\bar{X}} : 1 \to \C(\bar{X}; \bigotimes^n\bar{X})$, and
+			\item universal arrows are closed under composition, which is to say that for $n \geq 0$, $k_1,...,k_n \geq 0$ and objects $\bar{\bar X}$, the composite
+			\[u_{\prod\bigotimes\bar{\bar X}} \circ \prod_i u_{\bar X_i} : \bar{\bar X} \to \bigotimes\limits^n\prod\bigotimes\limits^{k_i} \bar{\bar X}\] is universal for $\bar{\bar X}$.
+		\end{enumerate}
+	\end{definition}
+	
+	\begin{proposition}
+		Every representable $\V$-multicategory can be given the structure of an unbiased monoidal $\V$-category, and vice versa.
+	\end{proposition}
+	\begin{proof}
+		$(\Rightarrow)$ Suppose $\C$ is a representable $\V$-multicategory. We construct an unbiased monoidal $\V$-category structure on the $\V$-category $\C_1$. For $n \geq 0$ we define $\V$-functors $\bigotimes^n : \C^n \to \C$ whose action on objects is determined by representability. On morphisms, we need to construct maps of shape
+		\[\C_1^n(\bar X,\bar Y) \to \C_1(\bigotimes^n \bar X;\bigotimes^n \bar Y);\] these are given by the composites
+		\[\prod_i^n \C(X_i,Y_i) \xrightarrow{u_{\bar Y} \circ -} \C(\bar X;\bigotimes^n \bar Y) \xrightarrow{(- \circ u_{\bar X})^{-1}} \C(\bigotimes^n \bar X;\bigotimes^n \bar Y).\]
+		This preserves identities due to the unitality of ${\circ}$ in $\C$; it preserves composition due to the associativity of ${\circ}$ in $\C$.
+		% https://q.uiver.app/#q=WzAsNSxbMiwwLCJcXHByb2RcXGxpbWl0c19pXm4gXFxDKFhfaSxYX2kpIl0sWzAsMCwiXFxwcm9kXFxsaW1pdHNfaV5uIDEiXSxbMiwxLCJcXEMoXFxiYXIgWDtcXGJpZ290aW1lc1xcbGltaXRzXm4gXFxiYXIgWCkiXSxbMiwyLCJcXEMoXFxiaWdvdGltZXNcXGxpbWl0c15uIFxcYmFyIFg7XFxiaWdvdGltZXNcXGxpbWl0c15uIFxcYmFyIFgpIl0sWzAsMiwiMSJdLFsxLDAsIlxccHJvZCAxX3tYaX0iXSxbMywyLCItIFxcY2lyYyB1IiwyXSxbNCwzLCIxX3tcXGJpZ290aW1lc1xcYmFyIFh9IiwyXSxbNCwyLCJ1Il0sWzAsMiwidSBcXGNpcmMgLSJdLFsxLDQsIlxcc2ltIiwyXV0=
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{\prod\limits_i^n 1} \&\& {\prod\limits_i^n \C(X_i,X_i)} \\
+			\&\& {\C(\bar X;\bigotimes\limits^n \bar X)} \\
+			1 \&\& {\C(\bigotimes\limits^n \bar X;\bigotimes\limits^n \bar X)}
+			\arrow["{\prod 1_{Xi}}", from=1-1, to=1-3]
+			\arrow["\sim"', from=1-1, to=3-1]
+			\arrow["{u \circ -}", from=1-3, to=2-3]
+			\arrow["u", from=3-1, to=2-3]
+			\arrow["{1_{\bigotimes\bar X}}"', from=3-1, to=3-3]
+			\arrow["{- \circ u}"', from=3-3, to=2-3]
+		\end{tikzcd}\]
+		% https://q.uiver.app/#q=WzAsOSxbMSwwLCJcXHByb2RcXGxpbWl0c19pXm5cXEMoWF9pO1pfaSkiXSxbMCwwLCJcXHByb2RcXGxpbWl0c19pXm5cXEMoWV9pO1pfaSkgXFx0aW1lcyBcXHByb2RcXGxpbWl0c19pXm5cXEMoWF9pO1lfaSkiXSxbMSw0LCJcXEMoXFxiaWdvdGltZXNcXGJhciBYO1xcYmlnb3RpbWVzXFxiYXIgWikiXSxbMCw0LCJcXEMoXFxiaWdvdGltZXNcXGJhciBZO1xcYmlnb3RpbWVzXFxiYXIgWikgXFx0aW1lcyBcXEMoXFxiaWdvdGltZXNcXGJhciBYO1xcYmlnb3RpbWVzXFxiYXIgWSkiXSxbMCwzLCJcXEMoXFxiaWdvdGltZXNcXGJhciBZO1xcYmlnb3RpbWVzXFxiYXIgWikgXFx0aW1lcyBcXEMoXFxiYXIgWDtcXGJpZ290aW1lc1xcYmFyIFkpIl0sWzAsMSwiXFxDKFxcYmFyIFk7XFxiaWdvdGltZXNcXGJhciBaKSBcXHRpbWVzIFxccHJvZFxcbGltaXRzX2leblxcQyhYX2k7WV9pKSJdLFsxLDEsIlxcQyhcXGJhciBYO1xcYmlnb3RpbWVzXFxiYXIgWikiXSxbMSwzLCJcXEMoXFxiYXIgWDtcXGJpZ290aW1lc1xcYmFyIFopIl0sWzAsMiwiXFxDKFxcYmlnb3RpbWVzXFxiYXIgWTtcXGJpZ290aW1lc1xcYmFyIFopIFxcdGltZXMgXFxwcm9kXFxsaW1pdHNfaV5uXFxDKFhfaTtZX2kpIl0sWzEsMCwiXFxwcm9ke1xcY2lyY30iXSxbMywyLCJ7XFxjaXJjfSIsMl0sWzMsNCwiMSBcXHRpbWVzICgtIFxcY2lyYyB1KSJdLFsxLDUsIih1IFxcY2lyYyAtKSBcXHRpbWVzIDEiLDJdLFs1LDYsIlxcY2lyYyJdLFswLDYsInUgXFxjaXJjIC0iXSxbMiw3LCItIFxcY2lyYyB1IiwyXSxbNCw3LCJcXGNpcmMiLDJdLFs2LDcsIiIsMCx7ImxldmVsIjoyLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzgsNSwiKC0gXFxjaXJjIHUpIFxcdGltZXMgMSJdLFs4LDQsIjEgXFx0aW1lcyAodSBcXGNpcmMgLSkiLDJdXQ==
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{\prod\limits_i^n\C(Y_i;Z_i) \times \prod\limits_i^n\C(X_i;Y_i)} \& {\prod\limits_i^n\C(X_i;Z_i)} \\
+			{\C(\bar Y;\bigotimes\bar Z) \times \prod\limits_i^n\C(X_i;Y_i)} \& {\C(\bar X;\bigotimes\bar Z)} \\
+			{\C(\bigotimes\bar Y;\bigotimes\bar Z) \times \prod\limits_i^n\C(X_i;Y_i)} \\
+			{\C(\bigotimes\bar Y;\bigotimes\bar Z) \times \C(\bar X;\bigotimes\bar Y)} \& {\C(\bar X;\bigotimes\bar Z)} \\
+			{\C(\bigotimes\bar Y;\bigotimes\bar Z) \times \C(\bigotimes\bar X;\bigotimes\bar Y)} \& {\C(\bigotimes\bar X;\bigotimes\bar Z)}
+			\arrow["{\prod{\circ}}", from=1-1, to=1-2]
+			\arrow["{(u \circ -) \times 1}"', from=1-1, to=2-1]
+			\arrow["{u \circ -}", from=1-2, to=2-2]
+			\arrow["\circ", from=2-1, to=2-2]
+			\arrow[equals, from=2-2, to=4-2]
+			\arrow["{(- \circ u) \times 1}", from=3-1, to=2-1]
+			\arrow["{1 \times (u \circ -)}"', from=3-1, to=4-1]
+			\arrow["\circ"', from=4-1, to=4-2]
+			\arrow["{1 \times (- \circ u)}", from=5-1, to=4-1]
+			\arrow["{{\circ}}"', from=5-1, to=5-2]
+			\arrow["{- \circ u}"', from=5-2, to=4-2]
+		\end{tikzcd}\]
+		So have have the required $\V$-functors $\bigotimes^n : \C_1^n \to \C_1$. Now we construct $\V$-natural isomorphisms
+		\[\beta_{n,\bar k} : \bigotimes^n \prod \bigotimes^{k_i} \Rightarrow \bigotimes^k\]
+		whose components are the isomorphisms given by the fact that there are universal arrows from $\bar{\bar X}$ into both $\bigotimes^n \prod \bigotimes^{k_i}$ and $\bigotimes^k$.
+		
+		It remains to show that the $\beta$ satisfy the coherence equation. Let $\bar{\bar{\bar X}}$ be a triply indexed sequence of objects. The coherence diagram for $\beta$ relates four different bracketings of $\bigotimes X$.
+		Let the corresponding tensor product objects (from the four corners of the diagram) be $X_A, X_B, X_C$ and $X_D$.
+		By the `closure under composition' axiom, each of these has a universal arrow from $\bar{\bar{\bar X}}$, $u_A, u_B, u_C$ and $u_D$ respectively, formed by composing elementary universal arrows using $\circ$.
+		Writing $\beta_{AB}$ for the isomorphism from $X_A \to X_B$, and so on, we need to show that $\beta_{BD} \circ \beta_{AB} = \beta_{CD} \circ \beta_{AC}$.
+		% https://q.uiver.app/#q=WzAsNCxbMCwwLCJYX0EiXSxbMSwwLCJYX0IiXSxbMCwxLCJYX0MiXSxbMSwxLCJYX0QiXSxbMCwxLCJcXGJldGFfe0FCfSJdLFsxLDMsIlxcYmV0YV97QkR9Il0sWzIsMywiXFxiZXRhX3tDRH0iLDJdLFswLDIsIlxcYmV0YV97QUN9IiwyXV0=
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{X_A} \& {X_B} \\
+			{X_C} \& {X_D}
+			\arrow["{\beta_{AB}}", from=1-1, to=1-2]
+			\arrow["{\beta_{AC}}"', from=1-1, to=2-1]
+			\arrow["{\beta_{BD}}", from=1-2, to=2-2]
+			\arrow["{\beta_{CD}}"', from=2-1, to=2-2]
+		\end{tikzcd}\] By construction we have $\beta_{PQ} \circ u_P = u_Q$ for any bracketings $P$ and $Q$. But then
+		\[\beta_{BD} \circ \beta_{AB} \circ u_A = \beta_{BD} \circ u_B = u_D = \beta_{CD} \circ u_C = \beta_{CD} \circ \beta_{AC} \circ u_A,\] and so by universality of $u_A$ the required coherence condition holds, and hence every representable $\V$-multicategory is an unbiased monoidal $\V$-category.
+		
+		$(\Leftarrow)$ Suppose $\C$ is an unbiased monoidal $\V$-category. We construct a representable $\V$-multicategory $\C_M$ on the same objects and identities. For $n \geq 0$ the hom-objects $\C_M(\bar X;Y)$ are defined by \[\C(\bigotimes^n \bar X;Y).\] Composition
+		\[\C_M(\bar Y; Z) \times \prod_{i=1}^{n} \C_M(\bar X_i; Y_i) \to \C_M(\bar{\bar X}; Z)\]
+		is defined by the composite
+		\begin{align*}
+			\C(\bigotimes^n\bar Y, Z) \times \prod_{i=1}^{n} \C(\bigotimes^{k_i}\bar X_i, Y_i) &\xrightarrow{1 \times \bigotimes^n} \C(\bigotimes^n Y, Z) \times \C(\bigotimes^n\prod\bigotimes^{k_i}\bar X_i, \bigotimes^n\bar Y)\\
+			&\xrightarrow{{\circ}} \C(\bigotimes^n\prod\bigotimes^{k_i}\bar X_i, Z) \xrightarrow{- \circ \beta^{-1}} \C(\bigotimes^k \bar{\bar X}, Z).
+		\end{align*}
+		This composition is associative and unital due to the coherence axiom for $\beta$ and the identity conditions on $\beta$, respectively. Thus, $\C_M$ is a $\V$-multicategory.
+		
+		To show $\C_M$ is representable:
+		\begin{enumerate}
+			\item For any list of objects $\bar X$, we choose the object $\bigotimes^n\bar X$ and define the universal arrow $u_{\bar X} : \bar X \to  \bigotimes^n \bar X$ to be the identity morphism $1_{\bigotimes^n\bar X} \in \C(\bigotimes^n\bar X, \bigotimes^n\bar X)$. Pre-composition with $u_{\bar X}$ induces an isomorphism \[\C_M(\bigotimes^n \bar X; Y) \xRightarrow{\sim} \C_M(\bar X; Y)\] and so $u_{\bar X}$ is universal.
+			
+			\item To check that universal arrows are closed under composition, we must show that the composite
+			\[v_{\bar{\bar X}} := u_{\prod\bigotimes\bar{\bar X}} \circ \prod_i u_{\bar X_i} : \bar{\bar X} \to \bigotimes\limits^n\prod\bigotimes\limits^{k_i} \bar X_i\]
+			is universal for $\bar{\bar X}$. This composite arrow $v_{\bar{\bar X}}$ corresponds to the morphism $\beta_{n,\bar k}^{-1} : \bigotimes^k \bar{\bar X} \to \bigotimes^n\prod\bigotimes^{k_i}\bar X_i$ in $\C$. Since $\beta_{n,\bar k}$ is a natural isomorphism, the map $- \circ (\beta_{n,\bar k})_{\bar{\bar X}}^{-1}$ is an isomorphism, which confirms that $v_{\bar{\bar X}}$ is a universal arrow.
+		\end{enumerate}
+		Thus, $\C_M$ is a representable $\V$-multicategory.
+	\end{proof}
+	
+\section{2-categories}
+
+\subsection{uMonCat}
+
+\begin{definition}
+	Let $\C$ and $\D$ be unbiased monoidal $\V$-categories. A \emph{lax monoidal $\V$-functor} between them comprises a $\V$-functor $F : \C \to \D$ along with $\V$-natural transformations
+	\[\mu_n : \bigotimes^n F \to F\bigotimes^n : \C^n \to \D\] for $n \geq 0$, such that $\mu_1 = 1_F$, and satisfying the coherence condition that the following diagram commutes:
+	% https://q.uiver.app/#q=WzAsNSxbMCwyLCJGXFxiaWdvdGltZXNeblxccHJvZFxcYmlnb3RpbWVzXntrX2l9Il0sWzIsMiwiRlxcYmlnb3RpbWVzXmsiXSxbMiwwLCJcXGJpZ290aW1lc15rIEZeayJdLFswLDAsIlxcYmlnb3RpbWVzXm5cXHByb2RcXGJpZ290aW1lc157a19pfSBGXmsiXSxbMCwxLCJcXGJpZ290aW1lc15uIEZebiBcXHByb2QgXFxiaWdvdGltZXNee2tfaX0iXSxbMiwxLCJcXG11X2siXSxbMCwxLCJGXFxiZXRhX3tuLFxcYmFyIGt9IiwyXSxbMywyLCJcXGJldGFfe24sXFxiYXIga30iXSxbNCwwLCJcXG11X24iLDJdLFszLDQsIlxcYmlnb3RpbWVzXm4gXFxwcm9kIFxcbXVfe2tfaX0iLDJdXQ==
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\bigotimes^n\prod\bigotimes^{k_i} F^k} \&\& {\bigotimes^k F^k} \\
+		{\bigotimes^n F^n \prod \bigotimes^{k_i}} \\
+		{F\bigotimes^n\prod\bigotimes^{k_i}} \&\& {F\bigotimes^k}
+		\arrow["{\beta_{n,\bar k}}", from=1-1, to=1-3]
+		\arrow["{\bigotimes^n \prod \mu_{k_i}}"', from=1-1, to=2-1]
+		\arrow["{\mu_k}", from=1-3, to=3-3]
+		\arrow["{\mu_n}"', from=2-1, to=3-1]
+		\arrow["{F\beta_{n,\bar k}}"', from=3-1, to=3-3]
+	\end{tikzcd}\]
+\end{definition}
+
+\begin{definition}
+	Let $(F,\mu), (G,\nu) : \C \to \D$ be lax monoidal functors between unbiased monoidal $\V$-categories. A \emph{monoidal $V$-natural transformation} between them comprises a $V$-natural transformation $\gamma : F \Rightarrow G$ between the underlying functors for which the following diagram commutes for all $n \geq 0$:
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXGJpZ290aW1lc15uIEZebiJdLFsxLDAsIlxcYmlnb3RpbWVzXm4gR15uIl0sWzAsMSwiRlxcYmlnb3RpbWVzXm4iXSxbMSwxLCJHXFxiaWdvdGltZXNebiJdLFswLDEsIlxcYmlnb3RpbWVzXm4gXFxnYW1tYV5uIl0sWzEsMywiXFxudV9uIl0sWzAsMiwiXFxtdV9uIiwyXSxbMiwzLCJcXGdhbW1hX3tcXGJpZ290aW1lc30iLDJdXQ==
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\bigotimes^n F^n} \& {\bigotimes^n G^n} \\
+		{F\bigotimes^n} \& {G\bigotimes^n}
+		\arrow["{\bigotimes^n \gamma^n}", from=1-1, to=1-2]
+		\arrow["{\mu_n}"', from=1-1, to=2-1]
+		\arrow["{\nu_n}", from=1-2, to=2-2]
+		\arrow["{\gamma_{\bigotimes}}"', from=2-1, to=2-2]
+	\end{tikzcd}\]
+\end{definition}
+
+\begin{proposition}
+	There is a (strict) 2-category $\V\text{-uMonCat}$ of unbiased monoidal $\V$-categories, lax monoidal $\V$-functors and monoidal $\V$-natural transformations.
+\end{proposition}
+\begin{proof}
+	Let $(F,\mu_F) : \C \to \D$ and $(G,\mu_G) : \D \to \E$ be lax monoidal functors between unbiased monoidal $\V$-categories. We define
+	\[\mu_{GF, n} : \bigotimes^n (GF)^n \to GF\bigotimes^n : \C^n \to \E\] by the composite
+	\[(G\mu_{F,n}) \circ (\mu_{G,n} F^n) : \bigotimes^n G^nF^n \to G \bigotimes^n F^n \to GF \bigotimes^n.\]
+	
+	This satisfies the coherence condition since $\mu_F$ and $\mu_G$ do so:
+	% https://q.uiver.app/#q=WzAsOSxbMSwzLCJHRlxcYmlnb3RpbWVzXm5cXHByb2RcXGJpZ290aW1lc157a19pfSJdLFsyLDMsIkdGXFxiaWdvdGltZXNeayJdLFsyLDAsIlxcYmlnb3RpbWVzXmsgR15rRl5rIl0sWzAsMCwiXFxiaWdvdGltZXNeblxccHJvZFxcYmlnb3RpbWVzXntrX2l9IEdea0ZeayJdLFswLDIsIlxcYmlnb3RpbWVzXm4gR15uRl5uIFxccHJvZCBcXGJpZ290aW1lc157a19pfSJdLFsyLDEsIkdcXGJpZ290aW1lc15rIEZeayJdLFswLDEsIlxcYmlnb3RpbWVzXm4gIEdebiBcXHByb2RcXGJpZ290aW1lc157a19pfSBGXmsiXSxbMSwyLCJHIFxcYmlnb3RpbWVzXm4gRl5uIFxccHJvZCBcXGJpZ290aW1lc157a19pfSJdLFsxLDEsIkcgXFxiaWdvdGltZXNebiBcXHByb2RcXGJpZ290aW1lc157a19pfSBGXmsiXSxbMCwxLCJHRlxcYmV0YV97bixcXGJhciBrfSIsMl0sWzMsMiwiXFxiZXRhX3tuLFxcYmFyIGt9Il0sWzIsNSwiXFxtdV97RyxrfUZeayJdLFs1LDEsIkdcXG11X3tGLGt9Il0sWzMsNiwiXFxiaWdvdGltZXNcXHByb2QgXFxtdV97RyxrX2l9IiwyXSxbNiw0LCJcXGJpZ290aW1lc1xccHJvZCBcXG11X3tGLGtfaX0iLDJdLFs0LDcsIlxcbXVfe0csbn0iLDJdLFs3LDAsIlxcbXVfe0Ysbn0iLDJdLFs2LDgsIlxcbXVfe0csbn0iXSxbOCw3LCJcXGJpZ290aW1lc1xccHJvZCBcXG11X3tGLGtfaX0iLDJdLFs4LDUsIkcgXFxiZXRhX3tuLFxcYmFyIGt9Il1d
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\bigotimes^n\prod\bigotimes^{k_i} G^kF^k} \&\& {\bigotimes^k G^kF^k} \\
+		{\bigotimes^n  G^n \prod\bigotimes^{k_i} F^k} \& {G \bigotimes^n \prod\bigotimes^{k_i} F^k} \& {G\bigotimes^k F^k} \\
+		{\bigotimes^n G^nF^n \prod \bigotimes^{k_i}} \& {G \bigotimes^n F^n \prod \bigotimes^{k_i}} \\
+		\& {GF\bigotimes^n\prod\bigotimes^{k_i}} \& {GF\bigotimes^k}
+		\arrow["{\beta_{n,\bar k}}", from=1-1, to=1-3]
+		\arrow["{\bigotimes\prod \mu_{G,k_i}}"', from=1-1, to=2-1]
+		\arrow["{\mu_{G,k}F^k}", from=1-3, to=2-3]
+		\arrow["{\mu_{G,n}}", from=2-1, to=2-2]
+		\arrow["{\bigotimes\prod \mu_{F,k_i}}"', from=2-1, to=3-1]
+		\arrow["{G \beta_{n,\bar k}}", from=2-2, to=2-3]
+		\arrow["{\bigotimes\prod \mu_{F,k_i}}"', from=2-2, to=3-2]
+		\arrow["{G\mu_{F,k}}", from=2-3, to=4-3]
+		\arrow["{\mu_{G,n}}"', from=3-1, to=3-2]
+		\arrow["{\mu_{F,n}}"', from=3-2, to=4-2]
+		\arrow["{GF\beta_{n,\bar k}}"', from=4-2, to=4-3]
+	\end{tikzcd}\] Hence this definition gives a lax monoidal $\V$-functor $(GF,\mu_{GF})$. The composition is unital with identity $(1,1) : \C \to \C$, and it is associative:
+	\begin{align*}
+		\mu_{(HG)F,n} &:= (HG\mu_{F,n}) \circ (\mu_{HG,n} F^n)\\
+		&= (HG\mu_{F,n}) \circ (H\mu_{G,n} F^n) \circ (\mu_{H,n} G^n F^n)\\
+		&= (H\mu_{GF,n}) \circ (\mu_{H,n} (GF)^n)\\
+		&= \mu_{H(GF),n}.
+	\end{align*}
+	The composite of two monoidal $\V$-natural transformations is again monoidal, since the following diagram commutes:
+	% https://q.uiver.app/#q=WzAsNixbMCwwLCJcXGJpZ290aW1lc15uIEZebiJdLFsxLDAsIlxcYmlnb3RpbWVzXm4gR15uIl0sWzAsMSwiRlxcYmlnb3RpbWVzXm4iXSxbMSwxLCJHXFxiaWdvdGltZXNebiJdLFsyLDAsIlxcYmlnb3RpbWVzXm4gSF5uIl0sWzIsMSwiSFxcYmlnb3RpbWVzXm4iXSxbMCwxLCJcXGJpZ290aW1lc15uIFxcZ2FtbWFebiJdLFsxLDMsIlxcbXVfe0csbn0iLDJdLFswLDIsIlxcbXVfe0Ysbn0iLDJdLFsyLDMsIlxcZ2FtbWFfe1xcYmlnb3RpbWVzfSIsMl0sWzEsNCwiXFxiaWdvdGltZXNebiBcXGRlbHRhXm4iXSxbMyw1LCJcXGRlbHRhX3tcXGJpZ290aW1lc30iLDJdLFs0LDUsIlxcbXVfe0gsbn0iXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\bigotimes^n F^n} \& {\bigotimes^n G^n} \& {\bigotimes^n H^n} \\
+		{F\bigotimes^n} \& {G\bigotimes^n} \& {H\bigotimes^n}
+		\arrow["{\bigotimes^n \gamma^n}", from=1-1, to=1-2]
+		\arrow["{\mu_{F,n}}"', from=1-1, to=2-1]
+		\arrow["{\bigotimes^n \delta^n}", from=1-2, to=1-3]
+		\arrow["{\mu_{G,n}}"', from=1-2, to=2-2]
+		\arrow["{\mu_{H,n}}", from=1-3, to=2-3]
+		\arrow["{\gamma_{\bigotimes}}"', from=2-1, to=2-2]
+		\arrow["{\delta_{\bigotimes}}"', from=2-2, to=2-3]
+	\end{tikzcd}\] Associativity and unitality are inherited from $\V\text{-Cat}$, since these are merely $\V$-natural transformations satisfying a given property.
+	
+	Hence we obtain the desired strict 2-category $\V\text{-uMonCat}$.
+\end{proof}
+
+\subsection{MonCat}
+
+\begin{definition}
+	Let $\C$ and $\D$ be biased monoidal $\V$-categories. A \emph{lax monoidal $\V$-functor} between them comprises a $\V$-functor $F : \C \to \D$ along with maps
+	\[\phi. : I \to FI,\ \phi_{X,Y} : FX \otimes FY \to F(X \otimes Y)\] for $X,Y$ in $\C$, making the followings coherence diagrams commute:
+	% https://q.uiver.app/#q=WzAsOCxbMSwwLCJGKEkgXFxvdGltZXMgWCkiXSxbMSwxLCJGWCJdLFswLDAsIkZJIFxcb3RpbWVzIEZYIl0sWzAsMSwiSSBcXG90aW1lcyBGWCJdLFsyLDEsIkZYIFxcb3RpbWVzIEkiXSxbMiwwLCJGWCBcXG90aW1lcyBGSSJdLFszLDAsIkYoWCBcXG90aW1lcyBJKSJdLFszLDEsIkZYIl0sWzMsMiwiXFxwaGkuIFxcb3RpbWVzIDEiXSxbMiwwLCJcXHBoaSJdLFswLDEsIkZcXGxhbWJkYSJdLFszLDEsIlxcbGFtYmRhIiwyXSxbNCw3LCJcXHJobyIsMl0sWzQsNSwiMSBcXG90aW1lcyBcXHBoaS4iXSxbNSw2LCJcXHBoaSJdLFs2LDcsIkZcXHJobyJdXQ==
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{FI \otimes FX} \& {F(I \otimes X)} \& {FX \otimes FI} \& {F(X \otimes I)} \\
+		{I \otimes FX} \& FX \& {FX \otimes I} \& FX
+		\arrow["\phi", from=1-1, to=1-2]
+		\arrow["{F\lambda}", from=1-2, to=2-2]
+		\arrow["\phi", from=1-3, to=1-4]
+		\arrow["{F\rho}", from=1-4, to=2-4]
+		\arrow["{\phi. \otimes 1}", from=2-1, to=1-1]
+		\arrow["\lambda"', from=2-1, to=2-2]
+		\arrow["{1 \otimes \phi.}", from=2-3, to=1-3]
+		\arrow["\rho"', from=2-3, to=2-4]
+	\end{tikzcd}\]
+	% https://q.uiver.app/#q=WzAsNixbMCwwLCIoRkEgXFxvdGltZXMgRkIpIFxcb3RpbWVzIEZDIl0sWzIsMSwiRihBIFxcb3RpbWVzIChCIFxcb3RpbWVzIEMpKSJdLFsxLDEsIkZBIFxcb3RpbWVzIEYoQiBcXG90aW1lcyBDKSJdLFswLDEsIkZBIFxcb3RpbWVzIChGQiBcXG90aW1lcyBGQykiXSxbMSwwLCJGKEEgXFxvdGltZXMgQikgXFxvdGltZXMgRkMiXSxbMiwwLCJGKChBIFxcb3RpbWVzIEIpIFxcb3RpbWVzIEMpIl0sWzAsNCwiXFxwaGkgXFxvdGltZXMgMSJdLFswLDMsIlxcYWxwaGEiLDJdLFs1LDEsIkYgXFxhbHBoYSJdLFsyLDEsIlxccGhpIiwyXSxbMywyLCIxIFxcb3RpbWVzIFxccGhpIiwyXSxbNCw1LCJcXHBoaSJdXQ==
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{(FA \otimes FB) \otimes FC} \& {F(A \otimes B) \otimes FC} \& {F((A \otimes B) \otimes C)} \\
+		{FA \otimes (FB \otimes FC)} \& {FA \otimes F(B \otimes C)} \& {F(A \otimes (B \otimes C))}
+		\arrow["{\phi \otimes 1}", from=1-1, to=1-2]
+		\arrow["\alpha"', from=1-1, to=2-1]
+		\arrow["\phi", from=1-2, to=1-3]
+		\arrow["{F \alpha}", from=1-3, to=2-3]
+		\arrow["{1 \otimes \phi}"', from=2-1, to=2-2]
+		\arrow["\phi"', from=2-2, to=2-3]
+	\end{tikzcd}\]
+\end{definition}
+
+\begin{definition}
+	Let $(F,\phi), (G,\psi) : \C \to \D$ be lax monoidal $V$-functors between biased monoidal $\V$-categories. A \emph{monoidal $V$-natural transformation} between them comprises a $V$-natural transformation $\gamma : F \Rightarrow G$ between the underlying functors for which the following diagrams commute for all $X,Y$ in $\C$:
+	% https://q.uiver.app/#q=WzAsNyxbMCwwLCJJIl0sWzEsMCwiRkkiXSxbMSwxLCJHSSJdLFsyLDAsIkZBIFxcb3RpbWVzIEZCIl0sWzIsMSwiR0EgXFxvdGltZXMgR0IiXSxbMywwLCJGKEEgXFxvdGltZXMgQikiXSxbMywxLCJHKEEgXFxvdGltZXMgQikgIl0sWzEsMiwiXFxnYW1tYV9JIl0sWzAsMiwiXFxwc2kuIiwyXSxbMCwxLCJcXHBoaS4iXSxbNCw2LCJcXHBzaSIsMl0sWzMsNSwiXFxwaGkiXSxbMyw0LCJcXGdhbW1hX0EgXFxvdGltZXMgXFxnYW1tYV9CIiwyXSxbNSw2LCJcXGdhbW1hX3tBIFxcb3RpbWVzIEJ9Il1d
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		I \& FI \& {FA \otimes FB} \& {F(A \otimes B)} \\
+		\& GI \& {GA \otimes GB} \& {G(A \otimes B) }
+		\arrow["{\phi.}", from=1-1, to=1-2]
+		\arrow["{\psi.}"', from=1-1, to=2-2]
+		\arrow["{\gamma_I}", from=1-2, to=2-2]
+		\arrow["\phi", from=1-3, to=1-4]
+		\arrow["{\gamma_A \otimes \gamma_B}"', from=1-3, to=2-3]
+		\arrow["{\gamma_{A \otimes B}}", from=1-4, to=2-4]
+		\arrow["\psi"', from=2-3, to=2-4]
+	\end{tikzcd}\]
+\end{definition}
+
+\begin{proposition}
+	There is a (strict) 2-category $\V\text{-MonCat}$ of biased monoidal $\V$-categories, lax monoidal $\V$-functors and monoidal $\V$-natural transformations.
+\end{proposition}
+
+\subsection{MultiCat}
+
+\begin{definition}
+	Let $\C$ and $\D$ be $\V$-multicategories. A \emph{$\V$-multifunctor} between them comprises maps of hom-objects
+	\[F_{\bar X,Y} : \C(\bar X;Y) \to \D(F\bar X;FY)\] for $\bar X,Y$ in $\C$, such that $F_{X,X}(1_X) = 1_{FX}$ and the following coherence diagram commutes:
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXEMoXFxiYXIgWTsgWikgXFx0aW1lcyBcXHByb2RfaV5uIFxcQyhcXGJhciBYX2k7IFlfaSkiXSxbMCwxLCJcXEQoRlxcYmFyIFk7IEZaKSBcXHRpbWVzIFxccHJvZF9pXm4gXFxEKEZcXGJhciBYX2k7IEZZX2kpIl0sWzEsMCwiXFxDKFxcYmFye1xcYmFyIFh9OyBaKSJdLFsxLDEsIlxcRChGXFxiYXJ7XFxiYXIgWH07IEZaKSJdLFswLDEsIkZfe1xcYmFyIFksWn0gXFx0aW1lcyBcXHByb2QgRl97XFxiYXIgWF9pLFlfaX0iLDJdLFswLDIsIlxcY2lyYyJdLFsxLDMsIlxcY2lyYyIsMl0sWzIsMywiRl97XFxiYXJ7XFxiYXIgWH0sWn0iXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C(\bar Y; Z) \times \prod_i^n \C(\bar X_i; Y_i)} \& {\C(\bar{\bar X}; Z)} \\
+		{\D(F\bar Y; FZ) \times \prod_i^n \D(F\bar X_i; FY_i)} \& {\D(F\bar{\bar X}; FZ)}
+		\arrow["\circ", from=1-1, to=1-2]
+		\arrow["{F_{\bar Y,Z} \times \prod F_{\bar X_i,Y_i}}"', from=1-1, to=2-1]
+		\arrow["{F_{\bar{\bar X},Z}}", from=1-2, to=2-2]
+		\arrow["\circ"', from=2-1, to=2-2]
+	\end{tikzcd}\]
+\end{definition}
+
+\begin{definition}
+	Let $F, G : \C \to \D$ be $\V$-multifunctors between $\V$-multicategories. A \emph{$\V$-multinatural transformation} $\gamma : F \Rightarrow G$ between them comprises maps
+	\[\gamma_X : FX \to GX\] such that the following diagram commutes:
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXEMoXFxiYXIgWDtZKSJdLFswLDEsIlxcRChGXFxiYXIgWDtGWSkiXSxbMSwwLCJcXEQoR1xcYmFyIFg7R1kpIl0sWzEsMSwiXFxEKEZcXGJhciBYO0dZKSJdLFswLDEsIkZfe1xcYmFyIFgsWX0iLDJdLFswLDIsIkdfe1xcYmFyIFgsWX0iXSxbMiwzLCItIFxcY2lyYyBcXGdhbW1hX3tcXGJhciBYfSJdLFsxLDMsIlxcZ2FtbWFfWSBcXGNpcmMgLSIsMl1d
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C(\bar X;Y)} \& {\D(G\bar X;GY)} \\
+		{\D(F\bar X;FY)} \& {\D(F\bar X;GY)}
+		\arrow["{G_{\bar X,Y}}", from=1-1, to=1-2]
+		\arrow["{F_{\bar X,Y}}"', from=1-1, to=2-1]
+		\arrow["{- \circ \gamma_{\bar X}}", from=1-2, to=2-2]
+		\arrow["{\gamma_Y \circ -}"', from=2-1, to=2-2]
+	\end{tikzcd}\]
+\end{definition}
+
+\begin{proposition}
+	There is a (strict) 2-category $\V\text{-MultiCat}$ of $\V$-multicategories, $\V$-multifunctors and $\V$-multinatural transformations.
+\end{proposition}
+\begin{proof}
+	Let $F: \C \to \D$ and $G: \D \to \E$ be $\V$-multifunctors between $\V$-multicategories. We define their composite $GF : \C \to \E$ on objects by $(GF)X = G(FX)$ and on hom-objects by the composite map
+	\[(GF)_{\bar X,Y} : \C(\bar X;Y) \xrightarrow{F_{\bar X,Y}} \D(F\bar X;FY) \xrightarrow{G_{F\bar X,FY}} \E(GF\bar X;GFY).\]
+	This composition respects identities, since
+	\[(GF)_{X,X}(1_X) = G_{FX,FX}(F_{X,X}(1_X)) = G_{FX,FX}(1_{FX}) = 1_{GFX}.\]
+	To see that $GF$ respects the multicategory composition, we can stack the coherence diagrams for $F$ and $G$ as follows:
+	% https://q.uiver.app/#q=WzAsNixbMCwwLCJcXEMoXFxiYXIgWTsgWikgXFx0aW1lcyBcXHByb2RfaV5uIFxcQyhcXGJhciBYX2k7IFlfaSkiXSxbMCwxLCJcXEQoRlxcYmFyIFk7IEZaKSBcXHRpbWVzIFxccHJvZF9pXm4gXFxEKEZcXGJhciBYX2k7IEZZX2kpIl0sWzEsMCwiXFxDKFxcYmFye1xcYmFyIFh9OyBaKSJdLFsxLDEsIlxcRChGXFxiYXJ7XFxiYXIgWH07IEZaKSJdLFswLDIsIlxcRShHRlxcYmFyIFk7IEdaKSBcXHRpbWVzIFxccHJvZF9pXm4gXFxFKEhGXFxiYXIgWF9pOyBHRllfaSkiXSxbMSwyLCJcXEUoR0ZcXGJhcntcXGJhciBYfTsgR1opIl0sWzAsMSwiRl97XFxiYXIgWSxafSBcXHRpbWVzIFxccHJvZC BGX3tcXGJhciBYX2ksWV9pfSIsMl0sWzAsMiwiXFxjaXJjIl0sWzEsMywiXFxjaXJjIiwyXSxbMiwzLCJGX3tcXGJhcntcXGJhciBYfSxafSJdLFsxLDQsIkdfe0ZcXGJhciBZLFp9IFxcdGltZXMgXFxwcm9kIEdfe0ZcXGJhciBYX2ksWl9pfSIsMl0sWzMsNSwiR197RlxcYmFye1xcYmFyIFh9LFp9Il0sWzQsNSwiXFxjaXJjIiwyXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C(\bar Y; Z) \times \prod_i^n \C(\bar X_i; Y_i)} \& {\C(\bar{\bar X}; Z)} \\
+		{\D(F\bar Y; FZ) \times \prod_i^n \D(F\bar X_i; FY_i)} \& {\D(F\bar{\bar X}; FZ)} \\
+		{\E(GF\bar Y; GFY) \times \prod_i^n \E(GF\bar X_i; GFY_i)} \& {\E(GF\bar{\bar X}; GFZ)}
+		\arrow["\circ", from=1-1, to=1-2]
+		\arrow["{F_{\bar Y,Z} \times \prod F_{\bar X_i,Y_i}}"', from=1-1, to=2-1]
+		\arrow["{F_{\bar{\bar X},Z}}", from=1-2, to=2-2]
+		\arrow["\circ"', from=2-1, to=2-2]
+		\arrow["{G_{F\bar Y,FZ} \times \prod G_{F\bar X_i,FY_i}}"', from=2-1, to=3-1]
+		\arrow["{G_{F\bar{\bar X},FZ}}", from=2-2, to=3-2]
+		\arrow["\circ"', from=3-1, to=3-2]
+	\end{tikzcd}\]
+	The outer rectangle shows that the composite $GF$ is a valid $\V$-multifunctor. This composition is associative and unital, with the identity multifunctor sending each object to itself and each hom-object to itself via the identity map.
+	
+	Now, let $\gamma: F \Rightarrow G$ and $\delta: G \Rightarrow H$ be $\V$-multinatural transformations. Their composite $\delta \circ \gamma : F \Rightarrow H$ is given by the component maps $(\delta \circ \gamma)_X := \delta_X \circ \gamma_X$. This is a $\V$-multinatural transformation because $\gamma$ and $\delta$ both are:
+	% https://q.uiver.app/#q=WzAsNyxbMCwwLCJcXEMoXFxiYXIgWDtZKSJdLFswLDIsIlxcRChGXFxiYXIgWDtGWSkiXSxbMiwwLCJcXEQoSFxcYmFyIFg7SFkpIl0sWzEsMSwiXFxEKEdcXGJhciBYO0dZKSJdLFsxLDIsIlxcRChGXFxiYXIgWDtHWSkiXSxbMiwxLCJcXEQoR1xcYmFyIFg7SFkpIl0sWzIsMiwiXFxEKEZcXGJhciBYO0hZKSJdLFswLDIsIkhfe1xcYmFyIFgsWX0iXSxbMCwxLCJGX3tcXGJhciBYLFl9IiwyXSxbMCwzLCJHX3tcXGJhciBYLFl9IiwxXSxbMyw0LCItIFxcY2lyYyBcXGdhbW1hX3tcXGJhciBYfSIsMl0sWzEsNCwiXFxnYW1tYV9ZIFxcY2lyYyAtIiwyXSxbMiw1LCItIFxcY2lyYyBcXGRlbHRhX3tcXGJhciBYfSJdLFszLDUsIlxcZGVsdGFfWSBcXGNpcmMgLSJdLFs1LDYsIi0gXFxjaXJjIFxcZ2FtbWFfe1xcYmFyIFh9Il0sWzQsNiwiXFxkZWx0YV9ZIFxcY2lyYyAtIiwyXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C(\bar X;Y)} \&\& {\D(H\bar X;HY)} \\
+		\& {\D(G\bar X;GY)} \& {\D(G\bar X;HY)} \\
+		{\D(F\bar X;FY)} \& {\D(F\bar X;GY)} \& {\D(F\bar X;HY)}
+		\arrow["{H_{\bar X,Y}}", from=1-1, to=1-3]
+		\arrow["{G_{\bar X,Y}}"{description}, from=1-1, to=2-2]
+		\arrow["{F_{\bar X,Y}}"', from=1-1, to=3-1]
+		\arrow["{- \circ \delta_{\bar X}}", from=1-3, to=2-3]
+		\arrow["{\delta_Y \circ -}", from=2-2, to=2-3]
+		\arrow["{- \circ \gamma_{\bar X}}"', from=2-2, to=3-2]
+		\arrow["{- \circ \gamma_{\bar X}}", from=2-3, to=3-3]
+		\arrow["{\gamma_Y \circ -}"', from=3-1, to=3-2]
+		\arrow["{\delta_Y \circ -}"', from=3-2, to=3-3]
+	\end{tikzcd}\]
+	This composition of transformations is associative and unital. The commutativity of the following diagram verifies the interchange law. \notes{TODO}
+	
+	Therefore $\V$-multicategories, $\V$-multifunctors, and $\V$-multinatural transformations form a strict 2-category.
+\end{proof}
+
+\begin{remark}
+	The full sub-2-category of $\V\text{-MultiCat}$ comprising $\V$-multicategories whose only morphisms are unary is isomorphic to $\V\text{-Cat}$.
+\end{remark}
+
+\subsection{Equivalences}
+
+\begin{proposition}
+	The construction of a $\V$-multicategorical structure on an unbiased monoidal $\V$-category is the assignment on objects of a 2-functor $M : \V\text{-uMonCat} \to \V\text{-RepMultiCat}$.
+\end{proposition}
+\begin{proof}
+	Let $\C$ and $\D$ be unbiased monoidal $\V$-categories, and let $(F,\mu) : \C \to \D$ be a lax monoidal $\V$-functor between them. Note that such a map is in particular a $\V$-functor with components
+	\[F_{X,Y} : \C(X,Y) \to \D(FX,FY)\] for all $X,Y \in \ob \C$.
+	
+	We need to define $MF : M\C \to M\D$ on objects and maps.
+	
+	On objects, since $\ob M\C = \ob \C$, let $MFX := FX$ for all $X \in \ob M\C$. On maps, we need assignments of type
+	\[MF_{\bar X,Y} : M\C(\bar X,Y) \to M\D(MF\bar X,MFY),\] which is to say of type
+	\[\C(\bigotimes \bar X,Y) \to \D(\bigotimes F\bar X,FY).\] Thus, define $MF_{\bar X,Y}$ to be the composite
+	\[\C(\bigotimes \bar X,Y) \xrightarrow{F_{\bar X,Y}} \D(F\bigotimes \bar X,FY) \xrightarrow{- \circ \mu} \D(\bigotimes F\bar X,FY).\]
+	We need to check that this definition respects identities and composition. For identities, we have that
+	\[MF_{X,X}(1_{X}) := (- \circ \mu_1)F_{X,X}(1_X) = (- \circ \mu_1)1_{FX} = 1_{FX}\] because $\mu_1$ is an identity. For composition, we need to show that the diagram
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJNXFxDKFxcYmFyIFk7IFopIFxcdGltZXMgXFxwcm9kX2lebiBNXFxDKFxcYmFyIFhfaTsgWV9pKSJdLFswLDEsIk1cXEQoTUZcXGJhciBZOyBNRlopIFxcdGltZXMgXFxwcm9kX2lebiBNXFxEKE1GXFxiYXIgWF9pOyBNRllfaSkiXSxbMSwwLCJNXFxDKFxcYmFye1xcYmFyIFh9OyBaKSJdLFsxLDEsIk1cXEQoTUZcXGJhcntcXGJhciBYfTsgTUZaKSJdLFswLDEsIk1GX3tcXGJhciBZLFp9IFxcdGltZXMgXFxwcm9kIE1GX3tcXGJhciBYX2ksWV9pfSIsMl0sWzAsMiwiXFxjaXJjIl0sWzEsMywiXFxjaXJjIiwyXSxbMiwzLCJNRl97XFxiYXJ7XFxiYXIgWH0sWn0iXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{M\C(\bar Y; Z) \times \prod_i^n M\C(\bar X_i; Y_i)} \& {M\C(\bar{\bar X}; Z)} \\
+		{M\D(MF\bar Y; MFZ) \times \prod_i^n M\D(MF\bar X_i; MFY_i)} \& {M\D(MF\bar{\bar X}; MFZ)}
+		\arrow["\circ", from=1-1, to=1-2]
+		\arrow["{MF_{\bar Y,Z} \times \prod MF_{\bar X_i,Y_i}}"', from=1-1, to=2-1]
+		\arrow["{MF_{\bar{\bar X},Z}}", from=1-2, to=2-2]
+		\arrow["\circ"', from=2-1, to=2-2]
+	\end{tikzcd}\] commutes. Unravelling the definitions of the vertices and edges of the above diagram, we obtain the following diagram
+	\begin{tiny}
+		% https://q.uiver.app/#q=WzAsMTcsWzAsMCwiXFxDKHtcXGJpZ290aW1lc31cXGJhciBZLFopIFxcdGltZXMgXFxDXm4oXFxiYXJ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sXFxiYXIgWSkiXSxbMCw1LCJcXEQoe1xcYmlnb3RpbWVzfUZcXGJhciBZLEZaKSBcXHRpbWVzIFxcRF5uKFxcYmFye1xcYmlnb3RpbWVzfUZcXGJhcntcXGJhciBYfSxGXFxiYXIgWSkiXSxbNCwwLCJcXEMoe1xcYmlnb3RpbWVzfVxcYmFye1xcYmFyIFh9LFopIl0sWzQsNSwiXFxEKHtcXGJpZ290aW1lc31GXFxiYXJ7XFxiYXIgWH0sRlopIl0sWzIsMCwiXFxDKHtcXGJpZ290aW1lc31cXGJhciBZLFopIFxcdGltZXMgXFxDKHtcXGJpZ290aW1lc31cXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSx7XFxiaWdvdGltZXN9XFxiYXIgWSkiXSxbMywwLCJcXEMoe1xcYmlnb3RpbWVzfVxcYmFye1xcYmlnb3RpbWVzfVxcYmFye1xcYmFyIFh9LFopIl0sWzEsNSwiXFxEKHtcXGJpZ290aW1lc31GXFxiYXIgWSxGWikgXFx0aW1lcyBcXEQoe1xcYmlnb3RpbWVzfVxcYmFye1xcYmlnb3RpbWVzfUZcXGJhcntcXGJhciBYfSx7XFxiaWdvdGltZXN9RlxcYmFyIFkpIl0sWzMsNSwiXFxEKHtcXGJpZ290aW1lc31cXGJhcntcXGJpZ290aW1lc31GXFxiYXJ7XFxiYXIgWH0sRlopIl0sWzQsMSwiXFxEKEZ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sRlopIl0sWzAsMSwiXFxEKEZ7XFxiaWdvdGltZXN9XFxiYXIgWSxGWikgXFx0aW1lcyBcXERebihGXFxiYXJ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sRlxcYmFyIFkpIl0sWzMsNCwiXFxEKHtcXGJpZ290aW1lc31GXFxiYXJ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sRlopIl0sWzMsMSwiXFxEKEZ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sRlopIl0sWzEsMiwiXFxEKEZ7XFxiaWdvdGltZXN9XFxiYXIgWSxGWikgXFx0aW1lcyBcXEQoe1xcYmlnb3RpbWVzfUZcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSx7XFxiaWdvdGltZXN9RlxcYmFyIFkpIl0sWzEsNCwiXFxEKHtcXGJpZ290aW1lc31GXFxiYXIgWSxGWikgXFx0aW1lcyBcXEQoe1xcYmlnb3RpbWVzfUZcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSx7XFxiaWdvdGltZXN9RlxcYmFyIFkpIl0sWzAsNCwiXFxEKHtcXGJpZ290aW1lc31GXFxiYXIgWSxGWikgXFx0aW1lcyBcXERebihGXFxiYXJ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sRlxcYmFyIFkpIl0sWzIsMSwiXFxEKEZ7XFxiaWdvdGltZXN9XFxiYXIgWSxGWikgXFx0aW1lcyBcXEQoRntcXGJpZ290aW1lc31cXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxGe1xcYmlnb3RpbWVzfVxcYmFyIFkpIl0sWzIsMiwiXFxEKEZ7XFxiaWdvdGltZXN9XFxiYXIgWSxGWikgXFx0aW1lcyBcXEQoe1xcYmlnb3RpbWVzfUZcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxGe1xcYmlnb3RpbWVzfVxcYmFyIFkpIl0sWzAsNCwiMSBcXHRpbWVzIFxcYmlnb3RpbWVzX3tcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxcXGJhciBZfSJdLFs0LDUsIlxcdGV4dHtjb21wfSJdLFs1LDIsIi0gXFxjaXJjIFxcYmV0YV57LTF9Il0sWzEsNiwiMSBcXHRpbWVzIFxcYmlnb3RpbWVzX3tcXGJhcntcXGJpZ290aW1lc31GXFxiYXJ7XFxiYXIgWH0sRlxcYmFyIFl9IiwyXSxbNiw3LCJcXHRleHR7Y29tcH0iLDJdLFs3LDMsIi0gXFxjaXJjIFxcYmV0YV57LTF9IiwyXSxbMiw4LCJGX3t7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sWn0iXSxbOCwzLCItIFxcY2lyYyBcXG11Il0sWzAsOSwiRl97e1xcYmlnb3RpbWVzfVxcYmFyIFksWn0gXFx0aW1lcyBGX3tcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxcXGJhciBZfSIsMl0sWzExLDEwLCItIFxcY2lyYyBcXG11Il0sWzEwLDcsIi0gXFxjaXJjIHtcXGJpZ290aW1lc31cXGJhclxcbXUiXSxbMTEsOCwiLSBcXGNpcmMgRlxcYmV0YV57LTF9Il0sWzUsMTEsIkZfe3tcXGJpZ290aW1lc31cXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxafSJdLFs5LDEyLCIxIFxcdGltZXMgXFxiaWdvdGltZXNfe0ZcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxGXFxiYXIgWX0iLDFdLFsxMiwxMywiKC0gXFxjaXJjIFxcbXUpIFxcdGltZXMgMSIsMl0sWzEzLDYsIjEgXFx0aW1lcyAoLSBcXGNpcmMge1xcYmlnb3RpbWVzfVxcYmFyXFxtdSkiXSxbMTMsMTAsIlxcdGV4dHtjb21wfSIsMl0sWzksMTQsIigtIFxcY2lyYyBcXG11KSBcXHRpbWVzIDEiLDJdLFsxNCwxLCIxIFxcdGltZXMgKC0gXFxjaXJjIFxcYmFyXFxtdSkiLDJdLFsxNCwxMywiMSBcXHRpbWVzIFxcYmlnb3RpbWVzX3tGXFxiYXJ7XFxiaWdvdGltZXN9XFxiYXJ7XFxiYXIgWH0sRlxcYmFyIFl9Il0sWzQsMTUsIkZfe3tcXGJpZ290aW1lc31cXGJhciBZLFp9IFxcdGltZXMgRl97e1xcYmlnb3RpbWVzfVxcYmFye1xcYmlnb3RpbWVzfVxcYmFye1xcYmFyIFh9LHtcXGJpZ290aW1lc31cXGJhciBZfSIsMl0sWzE1LDExLCJcXHRleHR7Y29tcH0iXSxbMTUsMTYsIjEgXFx0aW1lcyAoLSBcXGNpcmMgXFxtdSkiXSxbMTIsMTYsIjEgXFx0aW1lcyAoXFxtdSBcXGNpcmMgLSkiLDJdLFs5LDE1LCIxIFxcdGltZXMgRlxcYmlnb3RpbWVzX3tcXGJhcntcXGJpZ290aW1lc31cXGJhcntcXGJhciBYfSxcXGJhciBZfSJdLFsxNiwxMCwiXFx0ZXh0e2NvbXB9IiwxXV0=
+		\[\begin{tikzcd}[ampersand replacement=\&]
+			{\C({\bigotimes}\bar Y,Z) \times \C^n(\bar{\bigotimes}\bar{\bar X},\bar Y)} \&\& {\C({\bigotimes}\bar Y,Z) \times \C({\bigotimes}\bar{\bigotimes}\bar{\bar X},{\bigotimes}\bar Y)} \& {\C({\bigotimes}\bar{\bigotimes}\bar{\bar X},Z)} \& {\C({\bigotimes}\bar{\bar X},Z)} \\
+			{\D(F{\bigotimes}\bar Y,FZ) \times \D^n(F\bar{\bigotimes}\bar{\bar X},F\bar Y)} \&\& {\D(F{\bigotimes}\bar Y,FZ) \times \D(F{\bigotimes}\bar{\bigotimes}\bar{\bar X},F{\bigotimes}\bar Y)} \& {\D(F{\bigotimes}\bar{\bigotimes}\bar{\bar X},FZ)} \& {\D(F{\bigotimes}\bar{\bar X},FZ)} \\
+			\& {\D(F{\bigotimes}\bar Y,FZ) \times \D({\bigotimes}F\bar{\bigotimes}\bar{\bar X},{\bigotimes}F\bar Y)} \& {\D(F{\bigotimes}\bar Y,FZ) \times \D({\bigotimes}F\bar{\bigotimes}\bar{\bar X},F{\bigotimes}\bar Y)} \\
+			\\
+			{\D({\bigotimes}F\bar Y,FZ) \times \D^n(F\bar{\bigotimes}\bar{\bar X},F\bar Y)} \& {\D({\bigotimes}F\bar Y,FZ) \times \D({\bigotimes}F\bar{\bigotimes}\bar{\bar X},{\bigotimes}F\bar Y)} \&\& {\D({\bigotimes}F\bar{\bigotimes}\bar{\bar X},FZ)} \\
+			{\D({\bigotimes}F\bar Y,FZ) \times \D^n(\bar{\bigotimes}F\bar{\bar X},F\bar Y)} \& {\D({\bigotimes}F\bar Y,FZ) \times \D({\bigotimes}\bar{\bigotimes}F\bar{\bar X},{\bigotimes}F\bar Y)} \&\& {\D({\bigotimes}\bar{\bigotimes}F\bar{\bar X},FZ)} \& {\D({\bigotimes}F\bar{\bar X},FZ)}
+			\arrow["{1 \times \bigotimes_{\bar{\bigotimes}\bar{\bar X},\bar Y}}", from=1-1, to=1-3]
+			\arrow["{F_{{\bigotimes}\bar Y,Z} \times F_{\bar{\bigotimes}\bar{\bar X},\bar Y}}"', from=1-1, to=2-1]
+			\arrow["{\text{comp}}", from=1-3, to=1-4]
+			\arrow["{F_{{\bigotimes}\bar Y,Z} \times F_{{\bigotimes}\bar{\bigotimes}\bar{\bar X},{\bigotimes}\bar Y}}"', from=1-3, to=2-3]
+			\arrow["{- \circ \beta^{-1}}", from=1-4, to=1-5]
+			\arrow["{F_{{\bigotimes}\bar{\bigotimes}\bar{\bar X},Z}}", from=1-4, to=2-4]
+			\arrow["{F_{{\bigotimes}\bar{\bar X},Z}}", from=1-5, to=2-5]
+			\arrow["{1 \times F\bigotimes_{\bar{\bigotimes}\bar{\bar X},\bar Y}}", from=2-1, to=2-3]
+			\arrow["{1 \times \bigotimes_{F\bar{\bigotimes}\bar{\bar X},F\bar Y}}"{description}, from=2-1, to=3-2]
+			\arrow["{(- \circ \mu) \times 1}"', from=2-1, to=5-1]
+			\arrow["{\text{comp}}", from=2-3, to=2-4]
+			\arrow["{1 \times (- \circ \mu)}", from=2-3, to=3-3]
+			\arrow["{- \circ F\beta^{-1}}", from=2-4, to=2-5]
+			\arrow["{- \circ \mu}", from=2-4, to=5-4]
+			\arrow["{- \circ \mu}", from=2-5, to=6-5]
+			\arrow["{1 \times (\mu \circ -)}"', from=3-2, to=3-3]
+			\arrow["{(- \circ \mu) \times 1}"', from=3-2, to=5-2]
+			\arrow["{\text{comp}}"{description}, from=3-3, to=5-4]
+			\arrow["{1 \times \bigotimes_{F\bar{\bigotimes}\bar{\bar X},F\bar Y}}", from=5-1, to=5-2]
+			\arrow["{1 \times (- \circ \bar\mu)}"', from=5-1, to=6-1]
+			\arrow["{\text{comp}}"', from=5-2, to=5-4]
+			\arrow["{1 \times (- \circ {\bigotimes}\bar\mu)}", from=5-2, to=6-2]
+			\arrow["{- \circ {\bigotimes}\bar\mu}", from=5-4, to=6-4]
+			\arrow["{1 \times \bigotimes_{\bar{\bigotimes}F\bar{\bar X},F\bar Y}}"', from=6-1, to=6-2]
+			\arrow["{\text{comp}}"', from=6-2, to=6-4]
+			\arrow["{- \circ \beta^{-1}}"', from=6-4, to=6-5]
+		\end{tikzcd}\]
+	\end{tiny} which commutes, being made of naturality and extranaturality squares, along with the coherence for $\mu$.
+\end{proof}
+
+\begin{theorem}
+	The 2-category $\V\text{-uMonCat}$ and the full subcategory of $\V\text{-MultiCat}$ on the representable $\V$-multicategories are equivalent.
+\end{theorem}
+\begin{proof}
+	We construct a pair of 2-functors between the 2-category of unbiased monoidal $\V$-categories, $\V\text{-uMonCat}$, and the 2-category of representable $\V$-multicategories, $\V\text{-RepMultiCat}$, and show they form an equivalence.
+	
+	First, we construct a 2-functor $M : \V\text{-uMonCat} \to \V\text{-RepMultiCat}$. 
+	\begin{itemize}
+		\item $0$-cells: given an unbiased monoidal $\V$-category $\C$, let $M\C$ be as defined in the proof that every unbiased monoidal $\V$-category can be given the structure of a representable $\V$-multicategory.
+		\item $1$-cells: given a lax monoidal $\V$-functor $F : \C \to \D$ (which is in particular a $\V$-functor), let $MFX := FX$ and let $MF : M\C \to M\D$ comprise
+		\[MF_{\bar X,Y} := M\C(\bar X;Y) \to M\D(MF\bar X;MFY)\] defined as the composite
+		\[\C(\bigotimes \bar X,Y) \xrightarrow{F_{\bar X,Y}} \D(F\bigotimes \bar X,FY) \xrightarrow{- \circ \mu_n} \D(\bigotimes F\bar X,FY).\]
+		This satisfies $MF_{X,X}(1_X) = 1_{MFX}$ since $\mu_1$ is the identity; the following diagram shows that $MF$ respects composition.
+	\end{itemize}
+\end{proof}
+
+
+\end{document}

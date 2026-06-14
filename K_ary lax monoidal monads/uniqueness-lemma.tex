@@ -1,0 +1,336 @@
+\documentclass{article}
+
+\usepackage{amsthm, amsmath, amssymb}
+\usepackage{tikz-cd}
+\usepackage{enumerate}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\Pos}{\mathbf{Pos}}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\op}{\mathrm{op}}
+
+\title{Uniqueness of $\K$-ary lax monoidal structures\\ on commutative relative monads}
+\author{Andrew Slattery}
+\date{June 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We show that a $\K$-ary lax monoidal structure on a commutative relative monad,
+when one exists, is uniquely determined, provided the monad preserves the
+cofiltered limits that present infinite products as limits of their finite
+subproducts. The proof isolates two independent phenomena: a \emph{reduction}
+(the structure at an infinite arity is determined by the finite structures
+together with the structure on the constant terminal family), which uses
+cofiltered-limit preservation; and the \emph{rigidity of the terminal-family
+combinator} (it is forced to be an infinitary meet), which is a purely
+equational consequence of associativity and reindexing along surjections, valid
+over any cartesian base. No order-enrichment of the codomain is required.
+\end{abstract}
+
+\section{Setting}
+
+Let $\C$ and $\D$ be categories with finite products, and let
+$J\colon\C\to\D$ be a functor that preserves finite products (a strong monoidal
+functor for the cartesian structures). Recall that a \emph{$J$-relative monad}
+$(T,\eta,(-)^{*})$ consists of a functor $T\colon\C\to\D$, a unit
+$\eta_A\colon JA\to TA$, and a Kleisli extension
+$(-)^{*}\colon\D(JA,TB)\to\D(TA,TB)$, subject to the relative monad laws of
+Altenkirch--Chapman--Uustalu. We say $T$ is \emph{commutative} when it is
+equipped with a commutative tensorial strength; over a base such as $\Set$ this
+strength is unique, and it induces the finite lax monoidal structures used
+below.
+
+We index products by sets. Fix a class $\K$ of \emph{arities} (sets) such that
+$\C$ and $\D$ have $\K$-indexed products, $J$ preserves them, and $\K$ is closed
+under finite products, the formation of finite arities, passage to subsets of
+its members, and contains the singleton $1$. For an arity $K\in\K$ and a family
+$X\colon K\to\C$ we write $X_k$ for its value and $\prod_{k\in K}X_k$ for the
+product (formed in $\C$ or in $\D$ as the context demands).
+
+\begin{definition}\label{def:structure}
+A \emph{$\K$-ary lax monoidal structure} on the $J$-relative monad $T$ is a
+family of morphisms of $\D$, natural in $X\colon K\to\C$,
+\[
+  \phi_{K,X}\colon \prod_{k\in K} T X_k \longrightarrow T\Bigl(\,\prod_{k\in K} X_k\,\Bigr)
+  \qquad (K\in\K),
+\]
+the inner product formed in $\C$ and the outer in $\D$, satisfying:
+\begin{enumerate}[(U)]
+  \item[(U)] \emph{Unitality.} $\phi_{1,X}=\id_{TX}$.
+  \item[(A)] \emph{Associativity.} For $K\in\K$ and $(J_k)_{k\in K}$ in $\K$
+  with $M=\coprod_{k\in K}J_k\in\K$, writing $X\colon M\to\C$ as a doubly-indexed
+  family $X_{k,j}$ and $X'_k:=\prod_{j\in J_k}X_{k,j}$:
+  \[
+  \begin{tikzcd}[column sep=large]
+    {\prod_{k}\prod_{j} TX_{k,j}} \arrow[r,"\cong"] \arrow[d,"{\prod_k\phi_{J_k,X_{k,\bullet}}}"'] & {\prod_{m\in M} TX_m} \arrow[dd,"{\phi_{M,X}}"]\\
+    {\prod_{k} T X'_k} \arrow[d,"{\phi_{K,X'}}"'] & \\
+    {T\bigl(\prod_k X'_k\bigr)} \arrow[r,"\cong"'] & {T\bigl(\prod_{m} X_m\bigr)}
+  \end{tikzcd}
+  \]
+  \item[(R)] \emph{Reindexing along surjections.} For every surjection
+  $f\colon K\twoheadrightarrow L$ in $\K$ and every $X\colon L\to\C$, with the
+  reindexing maps $f^{*}_{TX}\colon\prod_{l}TX_l\to\prod_{k}TX_{f(k)}$ and
+  $f^{*}_{X}\colon\prod_l X_l\to\prod_k X_{f(k)}$ given by precomposition with
+  $f$:
+  \[
+  \begin{tikzcd}[column sep=huge]
+    {\prod_{l\in L} TX_l} \arrow[r,"\phi_{L,X}"] \arrow[d,"f^{*}_{TX}"'] & {T(\prod_{l} X_l)} \arrow[d,"T f^{*}_{X}"]\\
+    {\prod_{k\in K} TX_{f(k)}} \arrow[r,"\phi_{K,X\circ f}"'] & {T(\prod_{k} X_{f(k)})}
+  \end{tikzcd}
+  \]
+\end{enumerate}
+We further require that $\eta$ and the Kleisli extension be monoidal with
+respect to $\phi$ (the unit and multiplication axioms). These last two axioms
+play no role in what follows and we do not spell them out; the results below use
+only \textnormal{(U)}, \textnormal{(A)}, \textnormal{(R)}, naturality, and the
+finite uniqueness recorded in Hypothesis~\ref{hyp:fin}.
+\end{definition}
+
+\begin{remark}
+Reindexing is imposed only along \emph{surjections}. A general reindexing
+$f\colon K\to L$ factors as a surjection (a diagonal on products, i.e.
+duplication of indices) followed by an injection (a projection, i.e. deletion of
+indices); compatibility with the injective part is equivalent to $T$ preserving
+the relevant products, which is a strong and often false condition. The
+surjective fragment is exactly what is available in the examples of interest and
+is exactly what the proof uses.
+\end{remark}
+
+We isolate the only input concerning finite arities.
+
+\begin{theorem}[Finite uniqueness; Kock, McDermott--Uustalu]\label{hyp:fin}
+For a commutative relative monad over a suitable base \textnormal{(}e.g.
+$\C=\Set$, or any base on which tensorial strengths are unique\textnormal{)},
+the lax monoidal structure $\phi_{K,X}$ at every \emph{finite} arity $K$ is
+uniquely determined.
+\end{theorem}
+
+We treat this as known and concentrate on the passage from finite to infinite
+arities.
+
+\section{The terminal-family combinator}
+
+Write $M:=T1$, where $1$ is the terminal object of $\C$. For an arity $S\in\K$
+let $\mathbf 1\colon S\to\C$ be the constant family at $1$; since
+$\prod_{s\in S}1\cong 1$, evaluating the structure at $\mathbf 1$ yields a
+morphism of $\D$
+\[
+  d_S \;:=\; \phi_{S,\mathbf 1}\;\colon\; M^{S}\longrightarrow M .
+\]
+We call $d_S$ the \emph{combinator} at arity $S$. The whole of this section is a
+study of these morphisms; it uses only (U), (A), (R), and is valid over any
+cartesian $\D$.
+
+Throughout we reason with generalized elements: a \emph{point of $M$ at stage
+$A$} is a morphism $A\to M$ in $\D$, and we compare points by means of the
+following relation.
+
+\begin{lemma}\label{lem:semilattice}
+Write $m:=d_2\colon M\times M\to M$.
+\begin{enumerate}[(i)]
+  \item $m$ is commutative, associative, and idempotent.
+  \item For each object $A$ of $\D$, the relation on $\D(A,M)$ defined by
+  \[
+    p\sqsubseteq q \quad:\Longleftrightarrow\quad m\circ\langle p,q\rangle = p
+  \]
+  is a partial order, natural in $A$, with $m$ computing binary meets:
+  $m\circ\langle p,q\rangle=p\wedge q$.
+  \item \emph{(Lower bound.)} For every $S\in\K$, every $X$, and each $s\in S$,
+  $\;d_S(f)\sqsubseteq f_s\;$ for $f\colon A\to M^{S}$ with components
+  $f_s:=\mathrm{pr}_s\circ f$.
+  \item \emph{(Constants.)} $d_S\circ\Delta_S=\id_M$, where
+  $\Delta_S\colon M\to M^{S}$ is the diagonal; equivalently $d_S$ fixes constant
+  families.
+  \item \emph{(Interchange / monotonicity.)} $d_2\circ(d_S\times d_S)=d_S\circ
+  m^{S}$ up to the symmetry $M^{S}\times M^{S}\cong (M\times M)^{S}$.
+  Consequently $d_S$ is monotone: $f\sqsubseteq g$ pointwise implies
+  $d_S(f)\sqsubseteq d_S(g)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) Commutativity and associativity of $m$ are the instances of (R) along the
+transposition $2\to2$ and of (A) along $3=1+1+1$, at the terminal family.
+Idempotence is (R) along the fold $\nabla\colon 2\twoheadrightarrow 1$: there
+$f^{*}_{TX}\colon M\to M^{2}$ is the diagonal $\Delta$, $f^{*}_X\colon 1\to1$ is
+the identity, and $\phi_{1,\mathbf 1}=\id$ by (U), so the square reads
+$\id_M = m\circ\Delta$.
+
+(ii) Reflexivity is idempotence; antisymmetry uses commutativity
+($p\sqsubseteq q$ and $q\sqsubseteq p$ give $p=m\langle p,q\rangle=m\langle
+q,p\rangle=q$); transitivity uses associativity. Naturality in $A$ holds because
+$\sqsubseteq$ is defined by an equation between morphisms, which is stable under
+precomposition. That $m$ is the meet is precisely the definition of
+$\sqsubseteq$ together with $m\langle p,q\rangle\sqsubseteq p,q$, which follows
+from (i).
+
+(iii) Apply (A) with outer arity $2$ and blocks $\{s\}$ and $S\setminus s$, so
+that $M=\{s\}\sqcup(S\setminus s)=S$. Since $\phi_{\{s\},\mathbf1}=\id$ by (U)
+and $\phi_{S\setminus s,\mathbf1}=d_{S\setminus s}$, this gives
+$d_S = m\circ(\id\times d_{S\setminus s})$ up to the canonical isomorphism, so
+$d_S(f)=m\langle f_s,\,d_{S\setminus s}(f|_{S\setminus s})\rangle\sqsubseteq
+f_s$.
+
+(iv) Apply (R) along $\nabla\colon S\twoheadrightarrow 1$ at the terminal family,
+exactly as in (i): $f^{*}_{TX}=\Delta_S$, $f^{*}_X=\id$, $\phi_{1,\mathbf1}=\id$,
+giving $\id_M=d_S\circ\Delta_S$.
+
+(v) Both sides equal $d_{S\times 2}$ at the terminal family, computed by (A) for
+the two factorizations $S\times 2=\coprod_{s\in S}2=\coprod_{i\in 2}S$, identified
+by (R) along the symmetry $S\times2\cong 2\times S$. For monotonicity, suppose
+$f\sqsubseteq g$ pointwise, i.e. $m\langle f_s,g_s\rangle=f_s$ for all $s$. Then
+\[
+  m\langle d_S f, d_S g\rangle
+  \;\overset{(v)}{=}\;
+  d_S\bigl(s\mapsto m\langle f_s,g_s\rangle\bigr)
+  \;=\;
+  d_S(f),
+\]
+so $d_S(f)\sqsubseteq d_S(g)$.
+\end{proof}
+
+\begin{lemma}[Rigidity of the combinator]\label{lem:combinator}
+Let $\phi,\phi'$ be two $\K$-ary lax monoidal structures on $T$ with combinators
+$d_S,d'_S$. Then $d_S=d'_S$ for every $S\in\K$. In other words, $d_S$ is the
+$S$-ary meet $\bigwedge_{s\in S}$ for the order of
+Lemma~\ref{lem:semilattice}, and is in particular unique.
+\end{lemma}
+
+\begin{proof}
+Both $\phi$ and $\phi'$ induce, by Lemma~\ref{lem:semilattice}(i)--(ii), the
+\emph{same} commutative idempotent multiplication $m=d_2=d'_2$ on $M$ (it is the
+unique finite structure at arity $2$, by Theorem~\ref{hyp:fin}), hence the same
+order $\sqsubseteq$. Fix $S\in\K$ and a point $f\colon A\to M^{S}$. By
+Lemma~\ref{lem:semilattice}(iii) for $\phi'$, $d'_S(f)\sqsubseteq f_s$ for all
+$s$; equivalently the constant family $\Delta_S\circ d'_S(f)$ satisfies
+$\Delta_S\circ d'_S(f)\sqsubseteq f$ pointwise. Applying $d_S$, which is monotone
+by Lemma~\ref{lem:semilattice}(v) and fixes constants by (iv),
+\[
+  d'_S(f)\;=\;d_S\bigl(\Delta_S\circ d'_S(f)\bigr)\;\sqsubseteq\; d_S(f).
+\]
+By symmetry $d_S(f)\sqsubseteq d'_S(f)$, so antisymmetry gives $d_S(f)=d'_S(f)$.
+As $f$ was an arbitrary point (take $A=M^{S}$ and $f=\id$), $d_S=d'_S$.
+\end{proof}
+
+\section{From finite to infinite arities}
+
+\begin{theorem}\label{thm:main}
+Let $J\colon\C\to\D$ be a finite-product-preserving functor between categories
+with finite products, and let $T$ be a commutative $J$-relative monad satisfying
+Theorem~\ref{hyp:fin}. Let $K\in\K$ be an arity such that the canonical cone
+exhibits
+\[
+  \prod_{k\in K}X_k \;=\; \varprojlim_{\,J\in\mathcal P_{\mathrm{fin}}(K)}\ \prod_{j\in J}X_j
+\]
+as a cofiltered limit in $\C$ \emph{(}the transition maps being the
+projections\emph{)}, and suppose $T$ preserves this limit. Then any two $\K$-ary
+lax monoidal structures on $T$ agree at $K$:
+\[
+  \phi_{K,X}=\phi'_{K,X}\qquad\text{for every }X\colon K\to\C .
+\]
+In particular the $\K$-ary lax monoidal structure on $T$, if it exists, is
+unique.
+\end{theorem}
+
+\begin{proof}
+Since $T$ preserves the displayed cofiltered limit, the family
+\[
+  \bigl\{\,T(\pi_J)\colon T(\textstyle\prod_K X)\to T(\textstyle\prod_J X)\,\bigr\}_{J\in\mathcal P_{\mathrm{fin}}(K)}
+\]
+is a limit cone in $\D$, hence jointly monic. It therefore suffices to prove
+$T(\pi_J)\circ\phi_{K,X}=T(\pi_J)\circ\phi'_{K,X}$ for each finite $J\subseteq
+K$.
+
+Fix such a $J$ and let $X^{J}\colon K\to\C$ be the family with $X^{J}_k=X_k$ for
+$k\in J$ and $X^{J}_k=1$ otherwise; let $h\colon X\to X^{J}$ be the family
+morphism that is the identity on $J$ and the unique map $X_k\to1$ off $J$. Then
+$\prod_K X^{J}\cong\prod_J X$ and $\prod_K h=\pi_J$ under this isomorphism, so
+naturality of $\phi$ in the family gives
+\[
+  T(\pi_J)\circ\phi_{K,X}
+  \;=\;
+  \phi_{K,X^{J}}\circ\prod_{k}T(h_k).
+\]
+Now apply (A) to the partition $K=J\sqcup(K\setminus J)$, noting
+$X^{J}|_{J}=X|_J$ and $X^{J}|_{K\setminus J}=\mathbf 1$:
+\[
+  \phi_{K,X^{J}}
+  \;=\;
+  \phi_{2,W}\circ\bigl(\phi_{J,\,X|_J}\times d_{K\setminus J}\bigr),
+  \qquad W=\bigl(\textstyle\prod_J X,\;1\bigr),
+\]
+up to the canonical isomorphisms. In this expression $\phi_{J,X|_J}$ and
+$\phi_{2,W}$ are structures at \emph{finite} arities, hence equal for $\phi$ and
+$\phi'$ by Theorem~\ref{hyp:fin}; and $d_{K\setminus J}$ is the combinator,
+equal for $\phi$ and $\phi'$ by Lemma~\ref{lem:combinator}. Therefore
+$T(\pi_J)\circ\phi_{K,X}=T(\pi_J)\circ\phi'_{K,X}$. Joint monicity of the cone
+gives $\phi_{K,X}=\phi'_{K,X}$.
+\end{proof}
+
+\section{Remarks}
+
+\begin{remark}[What each hypothesis does]
+The proof factors into two independent parts, and the hypotheses split
+accordingly.
+\begin{itemize}
+  \item \emph{Commutativity} (Theorem~\ref{hyp:fin}) supplies uniqueness at
+  finite arities; it is the only place the monad's strength enters.
+  \item \emph{Preservation of the cofiltered limit} $\prod_K=\varprojlim_J\prod_J$
+  makes $\{T(\pi_J)\}$ jointly monic and is what reduces the infinite arity $K$
+  to its finite truncations together with the single combinator
+  $d_{K\setminus J}$ (the proof of Theorem~\ref{thm:main}). It is genuinely used
+  here and nowhere else.
+  \item \emph{Reindexing along surjections} (R) forces the multiplication
+  $d_2$ on $T1$ to be idempotent and the combinators to fix constants
+  (Lemma~\ref{lem:semilattice}(i),(iv)); these are what make $d_S$ rigid.
+\end{itemize}
+\end{remark}
+
+\begin{remark}[No order-enrichment is needed]
+The order $\sqsubseteq$ used in Section~2 is the intrinsic semilattice order of
+the idempotent commutative multiplication $d_2$ on $T1$; it is automatically a
+partial order on each hom-set $\D(A,T1)$, by Lemma~\ref{lem:semilattice}(ii).
+At no point is $\D$ assumed to be order-enriched, nor is $T1$ assumed to carry an
+order beyond the one its own multiplication defines. The combinator is forced to
+be an infinitary meet purely by the equational content of (U), (A), (R). The
+codomain $\D$ need only be cartesian.
+\end{remark}
+
+\begin{remark}[The role of $\Set\to\Pos$ and the partiality monad]
+The motivating instance is $\C=\Set$, $\D=\Pos$, $J$ the discrete-poset
+embedding, and $T$ the partiality (lift) monad, for which $T1$ is the
+two-element semilattice and $d_2$ is its meet; here $d_S$ is the $S$-ary
+conjunction $\forall$, and Theorem~\ref{thm:main} recovers the fact that the
+``zip'' on partial elements (defined exactly when all arguments are) is the
+unique lax monoidal structure. More generally one may replace the two-element
+semilattice by any dominance $\Sigma$, in which case $d_S=\forall_S$ requires
+$\forall_{S}$ to preserve $\Sigma$-openness; this is the \emph{compactness}
+condition on the arity $S$, and it governs \emph{existence}. Uniqueness, by
+contrast, needs no such condition: it is the content of the theorem that the
+structure is rigid wherever it exists.
+\end{remark}
+
+\begin{remark}[Generality]
+The base $\Pos$ plays no part beyond providing the relative structure: the
+theorem holds for any finite-product-preserving $J\colon\C\to\D$ between
+cartesian categories, with $\C$ carrying the cofiltered limits that present
+its $K$-fold products. The unit and multiplication axioms of
+Definition~\ref{def:structure} are not used; uniqueness is a property of the
+underlying commutative lax monoidal functor, granted finite uniqueness. The
+finite-uniqueness input is the natural home for the strength-theoretic results
+of Kock and of McDermott--Uustalu.
+\end{remark}
+
+\end{document}

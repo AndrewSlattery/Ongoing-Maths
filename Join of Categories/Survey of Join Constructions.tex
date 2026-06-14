@@ -1,0 +1,292 @@
+\documentclass{article}
+
+%%%
+
+\usepackage{amsmath, amsthm, amsfonts, amssymb, mathtools} %type maths
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}[proposition]{Lemma}
+\newtheorem{theorem}[proposition]{Theorem}
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[proposition]{Definition}
+\newtheorem{remark}[proposition]{Remark}
+\newtheorem{example}[proposition]{Example}
+\newtheorem{notation}[proposition]{Notation}
+\newtheorem{warning}[proposition]{Warning}
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\I}{\mathbb{I}}
+\DeclareMathOperator{\ob}{ob}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Cat}{Cat}
+\DeclareMathOperator{\sSet}{\mathbf{sSet}}
+\DeclareMathOperator{\Fun}{Fun}
+
+\usepackage{tikz-cd} %diagrams
+
+\begin{document}
+
+\section*{A survey of join constructions}
+
+We survey the main constructions of the join of categories and simplicial sets, their properties, and the relationships between them.
+
+%%%%%%%%%%%%%%%%%%%
+\section{The join of categories}
+%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}\label{join-cat}
+	Given categories $\C$ and $\D$, the \emph{join} $\C \star \D$ is the category with:
+	\begin{itemize}
+		\item $\ob(\C \star \D) := \ob\C \sqcup \ob\D$,
+		\item hom-sets
+		\[(\C \star \D)(X,Y) := \begin{cases}
+			\C(X,Y) & \text{if } X,Y \in \ob\C,\\
+			\D(X,Y) & \text{if } X,Y \in \ob\D,\\
+			\{*_{X,Y}\} & \text{if } X \in \ob\C,\ Y \in \ob\D,\\
+			\varnothing & \text{if } X \in \ob\D,\ Y \in \ob\C,
+		\end{cases}\]
+		\item composition inherited from $\C$ and $\D$ where applicable, and uniquely determined otherwise.
+	\end{itemize}
+\end{definition}
+
+\begin{remark}
+	For posets (viewed as thin categories), $\C \star \D$ is the \emph{ordinal sum}: the disjoint union $\C \sqcup \D$ with every element of $\C$ declared to be below every element of $\D$.
+\end{remark}
+
+\begin{example}\label{cones-cat}
+	Important special cases:
+	\begin{itemize}
+		\item The \emph{right cone} $\C^\triangleright := \C \star \mathbb{1}$ is $\C$ with a new terminal object $\top$ freely adjoined.
+		\item The \emph{left cone} $\C^\triangleleft := \mathbb{1} \star \C$ is $\C$ with a new initial object $\bot$ freely adjoined.
+		\item The interval category $\I := \mathbb{1} \star \mathbb{1}$ has objects $\{0,1\}$ with a unique non-identity morphism $\iota : 0 \to 1$.
+		\item More generally, $[n] = \underbrace{\mathbb{1} \star \cdots \star \mathbb{1}}_{n+1}$ recovers the ordinal $\{0 < 1 < \cdots < n\}$.
+	\end{itemize}
+\end{example}
+
+\begin{proposition}\label{join-cat-props}
+	The join of categories satisfies:
+	\begin{enumerate}
+		\item \emph{Bifunctoriality.} The assignment $(\C,\D) \mapsto \C \star \D$ extends to a bifunctor $\Cat \times \Cat \to \Cat$.
+		\item \emph{Associativity.} There is a canonical isomorphism $(\C \star \D) \star \E \cong \C \star (\D \star \E)$, natural in all three arguments.
+		\item \emph{Units.} The empty category $\varnothing$ is a strict two-sided unit: $\varnothing \star \C = \C = \C \star \varnothing$.
+	\end{enumerate}
+	Thus $(\Cat, \star, \varnothing)$ is a (strict) monoidal category.
+\end{proposition}
+
+\begin{remark}\label{join-not-symmetric}
+	The join is \emph{not} symmetric: $\C \star \D$ and $\D \star \C$ are in general not isomorphic. However, there is a canonical isomorphism $(\C \star \D)^{\mathrm{op}} \cong \D^{\mathrm{op}} \star \C^{\mathrm{op}}$.
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%
+\section{The join of simplicial sets}
+%%%%%%%%%%%%%%%%%%%
+
+There are (at least) three constructions of the join in the simplicial setting. They are all equivalent in an appropriate sense, but differ in their formal properties.
+
+%------------------
+\subsection{The classical join via ordinal sum}
+%------------------
+
+\begin{definition}\label{ordinal-sum}
+	The \emph{ordinal sum} is the functor $\oplus : \Delta \times \Delta \to \Delta$ defined on objects by $[m] \oplus [n] := [m + n + 1]$, with the inclusion of $[m]$ as the first $m+1$ elements and $[n]$ as the last $n+1$ elements. This extends to morphisms in the evident way.
+\end{definition}
+
+\begin{definition}\label{join-sset}
+	Given simplicial sets $X, Y : \Delta^{\mathrm{op}} \to \Set$, the \emph{join} $X \star Y$ is the simplicial set defined by the coend
+	\[(X \star Y)_n := \coprod_{[p] \oplus [q] = [n]} X_p \times Y_q\]
+	or equivalently as the left Kan extension of $(X,Y)$ along $\oplus^{\mathrm{op}}$. Explicitly, an $n$-simplex of $X \star Y$ is a triple $(p, \sigma, \tau)$ where $p + q = n - 1$, $\sigma \in X_p$ and $\tau \in Y_q$, subject to an appropriate equivalence relation.
+\end{definition}
+
+\begin{proposition}\label{join-sset-nerve}
+	For categories $\C$ and $\D$, there is a canonical isomorphism of simplicial sets
+	\[N(\C \star \D) \cong N(\C) \star N(\D)\]
+	where $N$ denotes the nerve functor. Thus the simplicial join extends the categorical join.
+\end{proposition}
+
+\begin{remark}\label{left-right-cones-sset}
+	As in the categorical case, we define:
+	\begin{itemize}
+		\item $X^\triangleright := X \star \Delta^0$ (right cone),
+		\item $X^\triangleleft := \Delta^0 \star X$ (left cone).
+	\end{itemize}
+	There is a canonical isomorphism $(\Delta^n)^\triangleright \cong \Delta^{n+1}$.
+\end{remark}
+
+\begin{proposition}\label{classical-join-props}
+	The classical simplicial join satisfies:
+	\begin{enumerate}
+		\item \emph{Bifunctoriality.} $- \star - : \sSet \times \sSet \to \sSet$ is a bifunctor.
+		\item \emph{Associativity.} $(X \star Y) \star Z \cong X \star (Y \star Z)$, canonically.
+		\item \emph{Units.} $\varnothing \star X \cong X \cong X \star \varnothing$.
+		\item \emph{Duality.} $(X \star Y)^{\mathrm{op}} \cong Y^{\mathrm{op}} \star X^{\mathrm{op}}$.
+	\end{enumerate}
+	However, the join does \emph{not} preserve colimits in either variable (it is not a left adjoint in either variable separately).
+\end{proposition}
+
+%------------------
+\subsection{The fat join (blunt join)}
+%------------------
+
+The fat join corrects the failure of the classical join to be a left adjoint.
+
+\begin{definition}\label{fat-join}
+	Given simplicial sets $X$ and $Y$, the \emph{fat join} (or \emph{blunt join}) $X \diamond Y$ is defined by the pushout
+	% https://q.uiver.app/#q=WzAsNCxbMCwwLCJYIFxcc3FjdXAgWSJdLFsxLDAsIlxcRGVsdGFeMSBcXHRpbWVzIFggXFx0aW1lcyBZIl0sWzAsMSwiWCBcXHNxY3VwIFkiXSxbMSwxLCJYIFxcZGlhbW9uZCBZIl0sWzAsMSwiIl0sWzAsMiwiIiwyXSxbMSwzXSxbMiwzXV0=
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{(\{0\} \times X) \sqcup (\{1\} \times Y)} \& {\Delta^1 \times X \times Y} \\
+		{X \sqcup Y} \& {X \diamond Y}
+		\arrow[from=1-1, to=1-2]
+		\arrow[from=1-1, to=2-1]
+		\arrow[from=1-2, to=2-2]
+		\arrow[from=2-1, to=2-2]
+	\end{tikzcd}\]
+	where the top map sends $(0, x)$ to $(0, x, y)$ for some (any, via degeneracy) $y$ and $(1, y)$ to $(1, x, y)$ for some $x$---more precisely, it arises from the two inclusions $\{0\}, \{1\} \hookrightarrow \Delta^1$ together with the projections from $X \times Y$.
+
+	Equivalently, $X \diamond Y$ is defined so that maps $X \diamond Y \to Z$ correspond to triples $(f, g, h)$ where $f : X \to Z$, $g : Y \to Z$, and $h : \Delta^1 \times X \times Y \to Z$ is a ``homotopy'' from $f \circ \mathrm{pr}_X$ to $g \circ \mathrm{pr}_Y$.
+\end{definition}
+
+\begin{remark}
+	The fat join is the construction that naturally arises when considering the join as a functor over the interval. Joyal defines the fat join via the functor $- \diamond - : \sSet \times \sSet \to \sSet / \I$ where $\I = \Delta^1$, and notes that it is a left adjoint in each variable (unlike the classical join).
+\end{remark}
+
+\begin{proposition}\label{fat-join-props}
+	The fat join satisfies:
+	\begin{enumerate}
+		\item \emph{Colimit preservation.} $X \diamond -$ and $- \diamond Y$ preserve colimits (they are left adjoints).
+		\item \emph{Categorical equivalence.} The canonical comparison map $c : X \diamond Y \to X \star Y$ is a categorical equivalence of simplicial sets (i.e., a weak equivalence in the Joyal model structure).
+		\item \emph{Not associative.} Unlike the classical join, the fat join is not strictly associative. It is only associative up to categorical equivalence.
+	\end{enumerate}
+\end{proposition}
+
+%------------------
+\subsection{The oriented fibre product (Lurie)}
+%------------------
+
+\begin{definition}\label{oriented-fibre}
+	Given functors (maps of simplicial sets) $F : \C \to \E$ and $G : \D \to \E$, the \emph{oriented fibre product} $\C \vec{\times}_\E \D$ is the simplicial set defined by the (strict) pullback
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{\C \vec{\times}_\E \D} \& {\Fun(\Delta^1, \E)} \\
+		{\C \times \D} \& {\E \times \E}
+		\arrow[from=1-1, to=1-2]
+		\arrow[from=1-1, to=2-1]
+		\arrow["{(\mathrm{ev}_0, \mathrm{ev}_1)}", from=1-2, to=2-2]
+		\arrow["{F \times G}", from=2-1, to=2-2]
+	\end{tikzcd}\]
+	Thus an object of $\C \vec{\times}_\E \D$ is a triple $(X, Y, e)$ where $X \in \C$, $Y \in \D$, and $e : F(X) \to G(Y)$ is a morphism in $\E$.
+\end{definition}
+
+\begin{remark}
+	The oriented fibre product is closely related to the \emph{comma category} (or comma object) construction. When $\C$, $\D$, $\E$ are (nerves of) ordinary categories, $\C \vec{\times}_\E \D$ is the nerve of the comma category $(F \downarrow G)$.
+\end{remark}
+
+\begin{proposition}[{Kerodon, Example 4.6.4.9}]\label{fat-join-oriented}
+	For any simplicial set $\C$ and simplicial sets $J$, $K$, there is a canonical isomorphism
+	\[\Fun(J \diamond K, \C) \;\cong\; \Fun(J, \C) \;\vec{\times}_{\Fun(J \times K, \C)}\; \Fun(K, \C).\]
+	That is, the fat join is ``dual'' to the oriented fibre product: a map out of a fat join is an oriented fibre product of mapping spaces.
+\end{proposition}
+
+%%%%%%%%%%%%%%%%%%%
+\section{Comparison and relationships}
+%%%%%%%%%%%%%%%%%%%
+
+The following diagram summarises the relationships:
+
+\[\begin{tikzcd}[ampersand replacement=\&, column sep=large]
+	{X \diamond Y} \& {X \star Y} \\
+	\& {\sSet / \Delta^1}
+	\arrow["{c}", "\sim"', from=1-1, to=1-2]
+	\arrow[from=1-1, to=2-2]
+	\arrow[from=1-2, to=2-2]
+\end{tikzcd}\]
+
+\begin{itemize}
+	\item The \textbf{classical join} $X \star Y$ is defined via ordinal sum. It is strictly associative and unital, making $(\sSet, \star, \varnothing)$ a monoidal category. It extends the join of categories under the nerve. However, it does not preserve colimits in either variable.
+
+	\item The \textbf{fat join} $X \diamond Y$ is defined by a pushout involving $\Delta^1 \times X \times Y$. It preserves colimits in each variable (and hence has right adjoints, giving the \emph{fat slice} constructions). It is categorically equivalent but not isomorphic to the classical join.
+
+	\item The \textbf{oriented fibre product} $\C \vec{\times}_\E \D$ is a dual/adjoint construction: maps out of a fat join correspond to oriented fibre products of functor categories.
+\end{itemize}
+
+\begin{warning}\label{pushout-warning}
+	For simplicial sets $X$ and $Y$, there is a canonical diagram
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{(\{0\} \times X \times Y) \sqcup (\{1\} \times X \times Y)} \& {\Delta^1 \times X \times Y} \\
+		{(\{0\} \times X) \sqcup (\{1\} \times Y)} \& {X \star Y}
+		\arrow[from=1-1, to=1-2]
+		\arrow[from=1-1, to=2-1]
+		\arrow[from=1-2, to=2-2]
+		\arrow[from=2-1, to=2-2]
+	\end{tikzcd}\]
+	This is almost never a pushout square (Kerodon, Warning 4.3.3.33). The pushout of this diagram is the fat join $X \diamond Y$, not the classical join $X \star Y$. The comparison map $c : X \diamond Y \to X \star Y$ is a categorical equivalence but not in general an isomorphism.
+\end{warning}
+
+\begin{remark}\label{cat-case}
+	For ordinary categories (via the nerve), the distinction between the classical and fat join dissolves. The comparison map $c : N(\C) \diamond N(\D) \to N(\C) \star N(\D)$ is an isomorphism when $\C$ and $\D$ are (nerves of) categories. In this case the pullback description
+	\[\C \star \D \;\cong\; \C^\triangleright \times_\I \D^\triangleleft\]
+	holds as an isomorphism (not merely an equivalence). See the companion note \emph{Join as Pullback} for a proof.
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%
+\section{The augmented simplex category and Day convolution}
+%%%%%%%%%%%%%%%%%%%
+
+The join admits an elegant description via the theory of Day convolution, which also clarifies the relationship between the classical and fat joins.
+
+\begin{definition}\label{aug-simplex}
+	The \emph{augmented simplex category} $\Delta_+$ has objects $[n]$ for $n \geq -1$ (where $[-1] = \varnothing$) and order-preserving maps as morphisms. The ordinal sum $\oplus : \Delta_+ \times \Delta_+ \to \Delta_+$ makes $\Delta_+$ into a (strict) monoidal category with unit $[-1]$.
+\end{definition}
+
+\begin{remark}
+	The category of augmented simplicial sets $\sSet_+ := [\Delta_+^{\mathrm{op}}, \Set]$ inherits a monoidal structure via Day convolution with respect to $\oplus$, and this monoidal product is precisely the join:
+	\[X \star Y \;\cong\; \int^{[p],[q]} X_p \times Y_q \times \Delta_+(-,[p] \oplus [q]).\]
+	This is simply the coend formula of Definition~\ref{join-sset}, re-expressed in the language of Day convolution. The augmented setting gives the cleanest formulation: $(\sSet_+, \star, \Delta^{-1})$ is a closed monoidal category, where $\Delta^{-1} = \varnothing$ is the unit.
+\end{remark}
+
+\begin{remark}
+	This perspective clarifies that the classical join is the ``correct'' monoidal product on (augmented) simplicial sets induced by ordinal sum, while the fat join is a colimit-preserving approximation that trades strict associativity for better formal properties (being a left adjoint in each variable).
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%
+\section{Summary table}
+%%%%%%%%%%%%%%%%%%%
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l c c c}
+	\hline
+	& \textbf{Classical join} $\star$ & \textbf{Fat join} $\diamond$ & \textbf{Oriented fibre product} $\vec{\times}$ \\
+	\hline
+	Setting & $\sSet \times \sSet \to \sSet$ & $\sSet \times \sSet \to \sSet/\Delta^1$ & $\sSet/\E \times \sSet/\E \to \sSet$ \\
+	Defined by & ordinal sum / Day & pushout & pullback \\
+	Associative & yes (strictly) & up to equivalence & n/a \\
+	Preserves colimits & no & yes (each variable) & n/a \\
+	Left adjoint & no & yes (fat slice) & n/a \\
+	Extends $\Cat$ join & yes (isomorphism) & yes (equivalence) & yes (comma category) \\
+	\hline
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{9}
+	\bibitem{Joyal2002}
+	A.~Joyal, \emph{Quasi-categories and Kan complexes}, J.~Pure Appl.~Algebra, vol.~175, pp.~207--222, 2002.
+
+	\bibitem{Joyal2008}
+	A.~Joyal, \emph{The theory of quasi-categories and its applications}, CRM Barcelona lecture notes, 2008.
+
+	\bibitem{Lurie2009}
+	J.~Lurie, \emph{Higher Topos Theory}, Annals of Mathematics Studies, vol.~170, Princeton University Press, 2009.
+
+	\bibitem{Kerodon}
+	J.~Lurie, \emph{Kerodon}, \texttt{https://kerodon.net}, 2024.
+
+	\bibitem{RiehlVerity2022}
+	E.~Riehl and D.~Verity, \emph{Elements of $\infty$-Category Theory}, Cambridge Studies in Advanced Mathematics, Cambridge University Press, 2022.
+
+	\bibitem{Campbell2020}
+	A.~Campbell, \emph{Joyal's cylinder conjecture}, Advances in Mathematics, vol.~389, 2021.
+\end{thebibliography}
+
+\end{document}

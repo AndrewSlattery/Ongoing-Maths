@@ -1,0 +1,149 @@
+\documentclass{article}
+
+%%%
+
+\usepackage{amsmath, amsthm, amsfonts, amssymb, mathtools} %type maths
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}[proposition]{Lemma}
+\newtheorem{theorem}[proposition]{Theorem}
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[proposition]{Definition}
+\newtheorem{remark}[proposition]{Remark}
+\newtheorem{example}[proposition]{Example}
+\newtheorem{notation}[proposition]{Notation}
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\I}{\mathbb{I}}
+\DeclareMathOperator{\ob}{ob}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Cat}{Cat}
+\DeclareMathOperator{\sSet}{\mathbf{sSet}}
+\DeclareMathOperator{\Fun}{Fun}
+\DeclareMathOperator{\colim}{colim}
+
+\usepackage{tikz-cd} %diagrams
+
+\begin{document}
+
+\section{The join of categories as a pullback over the interval}
+
+The \emph{interval category} $\I$ is the category with objects $0, 1$ and a single non-identity morphism $\iota : 0 \to 1$.
+
+\begin{definition}\label{join}
+	The \emph{join} $\C \star \D$ is the category with objects $\ob\C \sqcup \ob\D$. Its morphisms are those internal to $\C$ or $\D$, plus a unique bridging morphism from any $X \in \ob\C$ to any $Y \in \ob\D$.
+\end{definition}
+
+The \emph{right cone} $\C^\triangleright := \C \star 1$ freely adjoins a terminal object $\top$ to $\C$. Dually, the \emph{left cone} $\D^\triangleleft := 1 \star \D$ freely adjoins an initial object $\bot$ to $\D$.
+
+We now define two functors to the interval:
+\begin{itemize}
+	\item $p : \C^\triangleright \to \I$ maps $\C \mapsto 0$ and $\top \mapsto 1$. Morphisms internal to $\C$ map to $\id_0$, and bridging morphisms map to $\iota$.
+	\item $q : \D^\triangleleft \to \I$ maps $\bot \mapsto 0$ and $\D \mapsto 1$. Morphisms internal to $\D$ map to $\id_1$, and bridging morphisms map to $\iota$.
+\end{itemize}
+
+\begin{theorem}\label{main}
+	There is an isomorphism of categories
+	\[\C \star \D \;\cong\; \C^\triangleright \times_\I \D^\triangleleft\]
+\end{theorem}
+
+\begin{proof}
+	We compute the pullback explicitly. Objects in the pullback are pairs $(X,Y)$ where $p(X) = q(Y)$. Morphisms are pairs $(f,g)$ where $p(f) = q(g)$.
+	For objects, we have
+	\begin{itemize}
+		\item \emph{Over $0$:} $p(X) = 0 \implies X \in \ob\C$ and $q(Y) = 0 \implies Y = \bot$. This yields $\{(X, \bot) \mid X \in \ob\C\}$.
+		\item \emph{Over $1$:} $p(X) = 1 \implies X = \top$ and $q(Y) = 1 \implies Y \in \ob\D$. This yields $\{(\top, Y) \mid Y \in \ob\D\}$.
+	\end{itemize}
+	Thus, the total object set is precisely $\ob\C \sqcup \ob\D$.
+
+	For morphisms, we have
+	\begin{itemize}
+		\item \emph{Over $\id_0$:} $f \in \C$ and $g = \id_\bot$, forming a bijection with the morphisms of $\C$.
+		\item \emph{Over $\id_1$:} $f = \id_\top$ and $g \in \D$, forming a bijection with the morphisms of $\D$.
+		\item \emph{Over $\iota$:} $f$ is a unique bridge $X \to \top$ and $g$ is a unique bridge $\bot \to Y$. This pair $(f,g)$ corresponds exactly to the unique bridging morphism $X \to Y$ in $\C \star \D$.
+	\end{itemize}
+	Since composition in the pullback operates componentwise, it matches the composition in $\C \star \D$. Therefore, the bijection is an isomorphism.
+\end{proof}
+
+Note that the isomorphism is natural in both $\C$ and $\D$.
+
+\begin{remark}\label{joyal}
+	Joyal previously noted the functor $\C \star \D \to \I$, constructed as the join to the maps $\C \to 1$ and $\D \to 1$.
+\end{remark}
+
+\section{The simplicial case}
+
+The pullback description does not hold for the classical join of simplicial sets, but it does hold for the categorically equivalent \emph{fat join}.
+
+\begin{definition}\label{classical-join}
+	The \emph{join} $X \star Y$ of simplicial sets is defined by the coend
+	\[(X \star Y)_n = \coprod_{p+q=n-1} X_p \times Y_q.\]
+	This extends the categorical join: $N(\C \star \D) \cong N(\C) \star N(\D)$. As before, $X^\triangleright := X \star \Delta^0$ and $X^\triangleleft := \Delta^0 \star X$.
+\end{definition}
+
+The classical join does not preserve colimits in either variable. For instance, $- \star \Delta^0$ fails to preserve coproducts: $(\Delta^0 \sqcup \Delta^0)^\triangleright$ has three vertices (two points sharing a cone point), while $\Delta^1 \sqcup \Delta^1$ has four.
+
+\begin{definition}\label{fat-join}
+	The \emph{fat join} $X \diamond Y$ is defined by the pushout
+	\[\begin{tikzcd}[ampersand replacement=\&]
+		{(\{0\} \times X \times Y) \sqcup (\{1\} \times X \times Y)} \& {\Delta^1 \times X \times Y} \\
+		{X \sqcup Y} \& {X \diamond Y}
+		\arrow[from=1-1, to=1-2]
+		\arrow[from=1-1, to=2-1]
+		\arrow[from=1-2, to=2-2]
+		\arrow[from=2-1, to=2-2]
+	\end{tikzcd}\]
+	where the left vertical map projects onto $X$ and $Y$ respectively.
+\end{definition}
+
+Since the pushout defining $X \diamond Y$ is built from functors that each preserve colimits in $X$ (coproduct, product with a fixed object) and pushouts commute with colimits, the fat join $- \diamond Y$ preserves colimits in each variable.
+
+\begin{theorem}\label{fat-join-pullback}
+	$X \diamond Y \;\cong\; X^\triangleright \times_{\Delta^1} Y^\triangleleft$, where the maps to $\Delta^1$ are as in Section 1.
+\end{theorem}
+
+\begin{proof}
+	An $n$-simplex of $\Delta^1$ is a map $[n] \to [1]$, determined by a cut $k \in \{0,\ldots,n{+}1\}$ (sending $\{0,\ldots,k{-}1\} \mapsto 0$ and $\{k,\ldots,n\} \mapsto 1$). Over this cut, an $n$-simplex of $X^\triangleright$ is a $(k{-}1)$-simplex of $X$ joined to the cone point, and an $n$-simplex of $Y^\triangleleft$ is the cone point joined to an $(n{-}k)$-simplex of $Y$. A matching pair over cut $k$ therefore specifies a $(k{-}1)$-simplex of $X$ and an $(n{-}k)$-simplex of $Y$, with the cone points contributing no data. Summing over all cuts,
+	\[(X^\triangleright \times_{\Delta^1} Y^\triangleleft)_n \;\cong\; X_n \;\sqcup\; \left(\coprod_{p+q=n-1} X_p \times Y_q\right) \;\sqcup\; Y_n \;\cong\; (X \diamond Y)_n.\]
+	Face and degeneracy maps agree since they act on the $X$ and $Y$ components independently, shifting the cut accordingly.
+\end{proof}
+
+\begin{definition}\label{comparison-map}
+	The \emph{comparison map} $c : X \diamond Y \to X \star Y$ is defined as follows. By the pushout in Definition~\ref{fat-join}, it suffices to specify maps from each constituent that are compatible on the overlap:
+	\begin{itemize}
+		\item The inclusions $X \hookrightarrow X \star Y$ and $Y \hookrightarrow X \star Y$ handle the $X \sqcup Y$ component.
+		\item The map $\Delta^1 \times X \times Y \to X \star Y$ sends a triple $(t, \sigma, \tau)$ with $t : [n] \to [1]$ (cutting at $k$), $\sigma \in X_n$ and $\tau \in Y_n$ to the $(n)$-simplex of $X \star Y$ given by $(d^{>k}\sigma, d^{\leq k}\tau) \in X_{k-1} \times Y_{n-k}$.
+	\end{itemize}
+	On the overlap $\{0\} \times X \times Y$, the cut is at $k = n{+}1$ (everything maps to $0$), so $d^{>k}\sigma = \sigma$ and the $Y$ component is empty, recovering the inclusion of $X$; symmetrically for $\{1\} \times X \times Y$.
+\end{definition}
+
+\begin{proposition}\label{comparison}
+	The comparison map $c$ is an isomorphism when $X$ and $Y$ are nerves, and a categorical equivalence in general.
+\end{proposition}
+
+\begin{proof}
+	\emph{Nerves.} An $n$-simplex of $N(\C) \star N(\D)$ is a functor $[n] \to \C \star \D$, determined by a cut $k$ together with a functor $[0,k{-}1] \to \C$ and a functor $[k,n] \to \D$. This is exactly the data of an $n$-simplex of $N(\C)^\triangleright \times_{\Delta^1} N(\D)^\triangleleft \cong N(\C) \diamond N(\D)$ by Theorem~\ref{fat-join-pullback}, and $c$ sends each such simplex to the corresponding functor. This bijection respects face and degeneracy maps (which restrict or repeat elements of $[n]$, adjusting the cut and component functors), so $c$ is an isomorphism.
+
+	\emph{General case.} Since $\Delta^p = N([p])$, the nerve case gives isomorphisms $c_{\Delta^p, \Delta^q} : \Delta^p \diamond \Delta^q \xrightarrow{\;\sim\;} \Delta^p \star \Delta^q$ for all $p,q$. Every simplicial set is a colimit of representables, and both the fat join (by colimit preservation) and the classical join (by its coend formula) commute with this colimit:
+	\[X \diamond Y \;\cong\; \colim_{\Delta^p \to X,\, \Delta^q \to Y} \Delta^p \diamond \Delta^q, \qquad X \star Y \;\cong\; \colim_{\Delta^p \to X,\, \Delta^q \to Y} \Delta^p \star \Delta^q.\]
+	The naturality of $c$ gives a map between these colimits, induced levelwise by the isomorphisms $c_{\Delta^p,\Delta^q}$. A colimit of isomorphisms is an isomorphism, so $c$ is an isomorphism. Hence $c$ is in particular a categorical equivalence (see also \cite[Proposition 4.3.3.24]{Kerodon}).
+\end{proof}
+
+\begin{remark}
+	In summary, the pullback $X^\triangleright \times_{\Delta^1} Y^\triangleleft$ computes the fat join, not the classical join. These coincide for nerves of categories and agree up to categorical equivalence in general.
+\end{remark}
+
+\begin{thebibliography}{9}
+	\bibitem{Joyal2008}
+	A.~Joyal, \emph{The theory of quasi-categories and its applications}, CRM Barcelona lecture notes, 2008.
+
+	\bibitem{Lurie2009}
+	J.~Lurie, \emph{Higher Topos Theory}, Annals of Mathematics Studies, vol.~170, Princeton University Press, 2009.
+
+	\bibitem{Kerodon}
+	J.~Lurie, \emph{Kerodon}, \texttt{https://kerodon.net}, 2024.
+\end{thebibliography}
+
+\end{document}

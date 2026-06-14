@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz-cd}
+\usepackage{enumerate}
+\usepackage{xcolor}
+
+\newtheorem{definition}{Definition}
+
+\title{K-ary lax monoidal monad (cartesian)}
+\author{Andrew Slattery}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{definition}[$\mathcal{K}$-ary Lax Monoidal Monad]
+Let $(T, \eta, \mu)$ be a monad on a category $\mathcal{C}$ with sufficient products, and let $\mathcal{K} \subseteq \mathrm{Ob}(\mathcal{C})$ be a specified class of arity objects. A \emph{$\mathcal{K}$-ary lax monoidal structure} on $T$ consists of a family of morphisms, natural in $X$:
+\[
+\phi_{K, X} : \prod_{k \in K} TX_k \longrightarrow T\left(\prod_{k \in K} X_k\right)
+\]
+for each $K \in \mathcal{K}$ and $K$-indexed family of objects $X$, satisfying the following coherence conditions (three for the arity structure, two for the monad structure):
+
+\begin{enumerate}
+    \item \emph{Arity Unitality:} If $1 \in \mathcal{K}$, then $\phi_{1, X} = \mathrm{id}_{TX}: TX \to TX$.
+
+    \item \emph{Arity Associativity:} For $K \in \mathcal{K}$ and $J_k \in \mathcal{K}$ such that $M = \sum_{k \in K} J_k \in \mathcal{K}$, the following diagram commutes (where the horizontal arrows are canonical isomorphisms):
+    \[\begin{tikzcd}
+	{\prod_{k \in K} \prod_{j \in J_k} TX_{k,j}} & {\prod_{m \in M} TX_m} \\
+	{\prod_{k \in K} T\left(\prod_{j \in J_k} X_{k,j}\right)} \\
+	{T\left(\prod_{k \in K} \prod_{j \in J_k} X_{k,j}\right)} & {T\left(\prod_{m \in M} X_m\right)}
+	\arrow["\cong", from=1-1, to=1-2]
+	\arrow["{\prod_{k \in K} \phi_{J_k, X}}"', from=1-1, to=2-1]
+	\arrow["{\phi_{M, X}}", from=1-2, to=3-2]
+	\arrow["{\phi_{K, \prod X}}"', from=2-1, to=3-1]
+	\arrow["\cong"', from=3-1, to=3-2]
+    \end{tikzcd}\]
+    
+    \item \emph{Arity Re-indexing:} For any \emph{surjection} $f: K \twoheadrightarrow L$ in $\mathcal{K}$ the following diagram commutes for the re-indexing map $f^* : \prod_{l \in L} (-) \to \prod_{k \in K} (- \circ f)$:
+    \[
+    \begin{tikzcd}
+        \prod_{l \in L} TX_l \arrow[r, "\phi_{L, X}"] \arrow[d, "f^*_{TX}"'] & T\left(\prod_{l \in L} X_l\right) \arrow[d, "Tf^*_X"] \\
+        \prod_{k \in K} TX_{f(k)} \arrow[r, "\phi_{K, X \circ f}"'] & T\left(\prod_{k \in K} X_{f(k)}\right)
+    \end{tikzcd}
+    \]
+    Only surjections are imposed. A general $f$ factors as a surjection followed by an injection, and compatibility with the injective part is equivalent to $T$ preserving the corresponding product projections --- a condition that fails for the partiality monad (already $T(\pi_1) \circ \phi_2 \neq \pi_1$ for the lift monad, since $\phi_2$ has conjoined the definedness that $\pi_1$ discards). The surjective fragment still subsumes the symmetric-group action (renaming of indices) and contraction (duplication of indices).
+    
+    \item \emph{Unit Compatibility:} The following diagram commutes ($\eta$ is a monoidal natural transformation):
+    \[\begin{tikzcd}
+	{\prod_{k \in K} X_k} & {\prod_{k \in K} TX_k} \\
+	& {T\left(\prod_{k \in K} X_k\right)}
+	\arrow["{\prod \eta_{X_k}}", from=1-1, to=1-2]
+	\arrow["{\eta_{\prod X_k}}"', from=1-1, to=2-2]
+	\arrow["{\phi_{K, X}}", from=1-2, to=2-2]
+    \end{tikzcd}\]
+    
+    \item \emph{Multiplication Compatibility:} The following diagram commutes ($\mu$ is a monoidal natural transformation):
+    \[\begin{tikzcd}
+	{\prod_{k \in K} TTX_k} & {\prod_{k \in K} TX_k} \\
+	{T\left(\prod_{k \in K} TX_k\right)} \\
+	{TT\left(\prod_{k \in K} X_k\right)} & {T\left(\prod_{k \in K} X_k\right)}
+	\arrow["{\prod \mu_{X_k}}", from=1-1, to=1-2]
+	\arrow["{\phi_{K, TX}}"', from=1-1, to=2-1]
+	\arrow["{\phi_{K, X}}", from=1-2, to=3-2]
+	\arrow["{T\phi_{K, X}}"', from=2-1, to=3-1]
+	\arrow["{\mu_{\prod X_k}}"', from=3-1, to=3-2]
+    \end{tikzcd}\]
+\end{enumerate}
+\end{definition}
+
+\section*{Fibred form}
+Let $\rm{cod} : \mathcal{C}^{\to} \to \mathcal{C}$ be the fundamental fibration of a category $\mathcal{C}$ with pullbacks, fibre $\mathcal{C}/I$, base change $u^* : \mathcal{C}/J \to \mathcal{C}/I$ for $u : I \to J$. Let $\mathcal{K}$ be a class of maps in $\mathcal{C}$ such that 
+\begin{enumerate}[(i)]
+    \item $\mathcal{K}$ contains all identities and is closed under composition,
+    \item for each $u \in \mathcal{K}$ the base change $u^*$ has a right adjoint $\Pi_u$, and
+    \item the Beck--Chevalley condition holds for every pullback square in $\mathcal{C}$ one of whose parallel pairs is in $\mathcal{K}$.
+\end{enumerate}
+
+\begin{definition}[Fibred $\mathcal{K}$-monoidal monad]
+A \emph{$\mathcal{K}$-monoidal fibred monad} on $\mathcal{C}$ is a fibred monad $(T_\bullet, \eta, \mu)$ on $\rm{cod}$ together with, for each $u : I \to J$ in $\mathcal{K}$, a natural transformation
+\[
+\phi_u : \Pi_u \circ T_I \Longrightarrow T_J \circ \Pi_u \quad : \mathcal{C}/I \to \mathcal{C}/J,
+\]
+subject to the following coherence conditions:
+\begin{enumerate}
+    \item \emph{Unit:} $\phi_{\mathrm{id}} = \mathrm{id}$ (the comparison for identity arities is trivial).
+    
+    \item \emph{Composition:} For composable $u : I \to J$, $v : J \to L$ in $\mathcal{K}$, $\phi_{vu}$ equals the pasting of $\phi_u$ and $\phi_v$ under the canonical isomorphism $\Pi_v \Pi_u \cong \Pi_{vu}$. That is, the following diagram commutes:
+    \[\begin{tikzcd}
+    {\Pi_v \Pi_u T_I} & {\Pi_v T_J \Pi_u} & {T_L \Pi_v \Pi_u} \\
+    {\Pi_{vu} T_I} & & {T_L \Pi_{vu}}
+    \arrow["{\Pi_v \phi_u}", from=1-1, to=1-2]
+    \arrow["{\phi_v \Pi_u}", from=1-2, to=1-3]
+    \arrow["\cong"', from=1-1, to=2-1]
+    \arrow["\cong", from=1-3, to=2-3]
+    \arrow["{\phi_{vu}}"', from=2-1, to=2-3]
+    \end{tikzcd}\]
+    
+    \item \emph{Unit Compatibility:} $\eta$ is monoidal with respect to $\Pi_u$, meaning the following diagram commutes:
+    \[\begin{tikzcd}
+    {\Pi_u} & {\Pi_u T_I} \\
+    & {T_J \Pi_u}
+    \arrow["{\Pi_u \eta_I}", from=1-1, to=1-2]
+    \arrow["{\eta_J \Pi_u}"', from=1-1, to=2-2]
+    \arrow["{\phi_u}", from=1-2, to=2-2]
+    \end{tikzcd}\]
+    
+    \item \emph{Multiplication Compatibility:} $\mu$ is monoidal with respect to $\Pi_u$, meaning the following diagram commutes:
+    \[\begin{tikzcd}
+    {\Pi_u T_I T_I} & {\Pi_u T_I} \\
+    {T_J \Pi_u T_I} \\
+    {T_J T_J \Pi_u} & {T_J \Pi_u}
+    \arrow["{\Pi_u \mu_I}", from=1-1, to=1-2]
+    \arrow["{\phi_{u, T_I}}"', from=1-1, to=2-1]
+    \arrow["{\phi_u}", from=1-2, to=3-2]
+    \arrow["{T_J \phi_u}"', from=2-1, to=3-1]
+    \arrow["{\mu_J \Pi_u}"', from=3-1, to=3-2]
+    \end{tikzcd}\]
+
+    \item \emph{Beck--Chevalley Compatibility:} For every $u : I \to J$ in $\mathcal{K}$ and every morphism $w : J' \to J$ in $\mathcal{C}$, form the pullback
+    \[\begin{tikzcd}
+    {I'} & I \\
+    {J'} & J
+    \arrow["{w'}", from=1-1, to=1-2]
+    \arrow["{u'}"', from=1-1, to=2-1]
+    \arrow["u", from=1-2, to=2-2]
+    \arrow["w"', from=2-1, to=2-2]
+    \end{tikzcd}\]
+    so that $u' \in \mathcal{K}$. Then the comparison $\phi_{u'}$ obtained by pasting $\phi_u$ with the Beck--Chevalley isomorphisms and the fibred structure of $T_\bullet$ agrees with $\phi_{u'}$, i.e.\ the following diagram commutes:
+    \[\begin{tikzcd}[column sep=large]
+    {w^* \Pi_u T_I} & {w^* T_J \Pi_u} \\
+    {\Pi_{u'} (w')^* T_I} & {T_{J'} w^* \Pi_u} \\
+    {\Pi_{u'} T_{I'} (w')^*} & {T_{J'} \Pi_{u'} (w')^*}
+    \arrow["{w^* \phi_u}", from=1-1, to=1-2]
+    \arrow["\cong"', "\mathrm{BC}", from=1-1, to=2-1]
+    \arrow["\cong", from=1-2, to=2-2]
+    \arrow["\cong"', "T\text{ fibred}", from=2-1, to=3-1]
+    \arrow["\cong", "\mathrm{BC}"', from=2-2, to=3-2]
+    \arrow["{\phi_{u'} (w')^*}"', from=3-1, to=3-2]
+    \end{tikzcd}\]
+    Equivalently, the assignment $u \mapsto \phi_u$ is a \emph{fibred} natural transformation, not merely a pointwise family. Two complementary perspectives clarify what this means.
+
+    \smallskip
+    \noindent \emph{Two directions of coherence.} The data $\{\phi_u\}_{u \in \mathcal{K}}$ varies in two essentially independent ways:
+    \begin{enumerate}[(a)]
+        \item along the arity itself, by composing $\mathcal{K}$-maps $u, v$ to get $vu \in \mathcal{K}$; coherence in this direction is the Composition axiom (2);
+        \item along the base, by pulling an arity $u : I \to J$ back along an arbitrary $w : J' \to J$ in $\mathcal{C}$ (not necessarily in $\mathcal{K}$) to produce a new arity $u' : I' \to J'$; coherence in this direction is precisely the Beck--Chevalley axiom just stated.
+    \end{enumerate}
+    Without (b) one could, in principle, choose $\phi_u$ and $\phi_{u'}$ independently for each pullback-related pair, and nothing in axioms (1)--(4) would detect the inconsistency.
+
+    \smallskip
+    \noindent \emph{Pseudonatural transformation reading.} The codomain fibration corresponds to a pseudofunctor $\mathcal{C}/(-) : \mathcal{C}^{\mathrm{op}} \to \mathbf{Cat}$, sending $w : J' \to J$ to $w^* : \mathcal{C}/J \to \mathcal{C}/J'$. The fact that $T_\bullet$ is a \emph{fibred} monad says exactly that the pointwise monads $T_J$ assemble into a pseudonatural endomorphism of this pseudofunctor; equivalently, the structure isomorphisms $w^* T_J \cong T_{J'} w^*$ are coherent. Beck--Chevalley likewise says that the right adjoints $\Pi_u$, although contravariant in a different direction, also interact coherently with base change. Asking for $\phi$ to be a fibred natural transformation is then the requirement that the \emph{2-cells} $\phi_u$ are coherent with respect to both of these pseudonaturalities simultaneously --- whence the long pasting square in the diagram above.
+
+    \smallskip
+    \noindent \emph{Naive translation.} In the naive presentation, an indexing map $f : K \to L$ in $\mathcal{K}$ produces a reindexing $f^*$ on $L$-indexed families, and Arity Re-indexing forces $\phi$ to respect it. In the fibred form the analog of an indexing change is exactly an arbitrary base change $w$ in $\mathcal{C}$, and the Beck--Chevalley axiom is the verbatim translation of Arity Re-indexing to that setting. As Arity Re-indexing is now imposed only along \emph{surjections} (see the elementary definition above), the matching restriction applies here: imposing Beck--Chevalley along \emph{all} base changes $w$ would force $T$ to preserve product projections, which fails for the partiality monad. The precise class of base changes corresponding to the surjective fragment is clearest in the equipment reformulation.
+\end{enumerate}
+
+\textcolor{blue}{\emph{Remark.} The pullback $u'$ appearing in the Beck--Chevalley Compatibility axiom must itself lie in $\mathcal{K}$ in order for $\phi_{u'}$ to be defined. This is not implied by assumptions (i)--(iii) above and should be added as a fourth assumption on $\mathcal{K}$: \emph{$\mathcal{K}$ is stable under pullback along arbitrary morphisms of $\mathcal{C}$}. Alternatively, one may restrict the axiom to those $w$ for which the resulting $u'$ already happens to lie in $\mathcal{K}$, but the unrestricted version is cleaner and matches the naive Arity Re-indexing axiom of the previous definition.}
+\end{definition}
+
+
+
+\end{document}

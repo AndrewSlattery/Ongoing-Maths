@@ -1,0 +1,16 @@
+2026-06-05 14:12
+
+Hi Andrew,
+
+So I'm thinking about how to proceed, and I think what I'd like us to do straightaway is the following. 
+
+1. In the linked repository, I'd like you to write down in \label{sec:metalanguage-new} whatever the correct definition of K-ary lax monoidal structure for a relative monad over some J:Set -> C ends up being, where in all cases the monoidal structure is assumed to be cartesian. (I have written some unfinished stuff in there which you may feel free to adapt or replace wholesale.)
+
+2. Then, go ahead and prove that when T is a commutative relative monad over Set -> Pos that moreover preserves cofiltered limits, then for any arity class K the corresponding K-ary lax monoidal structure is unique when it exists. (Perhaps this can be done in more generality than over Set -> Pos by adapting some ideas from that Uustalu–McDermott paper, I'm curious about your thoughts.)
+
+The lemma (2) above isn't exactly load-bearing, but it gives a helpful universal property that explains the equational theory of the "scoping" operator that we use the lax monoidal structure to implement in the concrete case of the partiality (relative) monad.
+
+I think if we have these two things in place, at whatever level of generality you find most appropriate, then that will set us up to proceed with the rest of the paper. I'm sorry that the draft manuscript is a bit of a mess / all over the place at the moment — the rest will start falling into place once the general machinery discussed above is installed.
+
+Best,
+Jon

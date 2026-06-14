@@ -1,0 +1,199 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{tikz-cd}
+\usepackage{quiver}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{mathpartir}
+\usepackage{anyfontsize}
+\usepackage{prftree}
+\usepackage{color}
+\usepackage{hyperref} 
+\usepackage[margin=1.4in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[all,2cell]{xy}
+\usepackage{orcidlink}
+\usepackage{amsmath, bm}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{bussproofs}
+\usepackage{cleveref}
+\usepackage{enumitem, ragged2e}
+\definecolor{ceruleanblue}{rgb}{0.16, 0.32, 0.75}
+\hypersetup{
+    colorlinks=true,
+    urlcolor=ceruleanblue,
+    linkcolor=ceruleanblue,
+    citecolor=ceruleanblue
+}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\urlstyle{rm}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{fact}[theorem]{Fact}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{comt}[theorem]{Fact}
+\newtheorem{convention}[theorem]{Convention}
+\crefname{subsection}{Subsection}{Subsections}
+\crefname{cor}{Corollary}{Corollaries}
+\crefname{proposition}{Proposition}{Propositions}
+
+% Convenience macros
+\newcommand{\Ob}{\mathrm{Ob}}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\Cat}{\mathbf{Cat}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cT}{\mathcal{T}}
+
+%pacchetto per le note
+\usepackage{todonotes}
+\newcommand{\matteo}[1]{\todo[color=green!30,inline,caption={}]{\textbf{Matteo:} #1}}
+\newcommand{\andrew}[1]{\todo[color=blue!30,inline,caption={}]{\textbf{Andrew:} #1}}
+
+\title{Weak adjunctions and weak monads}
+\author{Andrew Slattery \& Matteo Spadetto}
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Relational functors}\label{sec:functors}
+
+We present three equivalent definitions of a relational functor and prove their equivalence.
+
+\subsection{Intrinsic definition}
+
+\begin{definition}\label{def:relfun}
+A \emph{relational functor} $F\colon \cC \rightsquigarrow \cD$ consists of an object mapping $F_0\colon \Ob(\cC) \to \Ob(\cD)$ together with, for each $f\colon A \to B$ in $\cC$, a subset $Ff \subseteq \cD(F_0 A, F_0 B)$, subject to:
+\begin{enumerate}[label=\textup{(RF-\arabic*)}]
+    \item\label{ax:id} $\id_{F_0 A} \in F(\id_A)$ for all $A \in \Ob(\cC)$.
+    \item\label{ax:comp} If $\varphi \in Ff$ and $\psi \in Fg$ are composable, then $\psi \circ \varphi \in F(g \circ f)$.
+\end{enumerate}
+\end{definition}
+
+\subsection{Enriched definition via the free quantaloid monad}\label{ssec:enriched}
+
+Write $\cP$ for the \emph{local power-set monad} on $\Cat$: the category $\cP\cC$ has the same objects as $\cC$, with $\cP\cC(A,B) = \mathcal{P}(\cC(A,B))$, composition given by the complex product $T \circ S = \{\psi \circ \varphi \mid \varphi \in S,\, \psi \in T\}$, and identities $\{\id_A\}$.  Since $\cP\cC$ is a quantaloid (hom-sets are sup-lattices and composition preserves joins in both variables), it carries a canonical enrichment over $(\mathbf{Sup}, \otimes)$.
+
+\begin{definition}\label{def:laxP}
+A \emph{lax $\cP$-functor} $F\colon \cC \to \cP\cD$ assigns to each object $A$ an object $FA$ and to each arrow $f\colon A \to B$ a subset $Ff \subseteq \cD(FA, FB)$, satisfying:
+\begin{enumerate}[label=\textup{(Lax-\arabic*)}]
+    \item $\{\id_{FA}\} \subseteq F(\id_A)$.
+    \item $Fg \circ Ff \subseteq F(g \circ f)$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}\label{prop:enriched}
+Relational functors $\cC \rightsquigarrow \cD$ are in bijection with lax $\cP$-functors $\cC \to \cP\cD$.
+\end{proposition}
+
+\begin{proof}
+The data are identical.  The axioms coincide: \ref{ax:id} is a restatement of (Lax-1), and \ref{ax:comp} unpacks (Lax-2) by the definition of the complex product.
+\end{proof}
+
+\subsection{Geometric definition via bo-spans}\label{ssec:bospan}
+
+\begin{definition}\label{def:bospan}
+A functor $P\colon \cE \to \cC$ is \emph{bijective-on-objects} (\emph{bo}) if $P_0\colon \Ob(\cE) \to \Ob(\cC)$ is a bijection.  A \emph{relational bo-span} from $\cC$ to $\cD$ is a span
+\[
+    \cC \xleftarrow{\;P\;} \cE \xrightarrow{\;Q\;} \cD
+\]
+in $\Cat$ such that $P$ is bo and the pairing $\langle P, Q \rangle \colon \cE \to \cC \times \cD$ is faithful.
+\end{definition}
+
+\begin{remark}\label{rmk:faithful}
+The faithfulness of $\langle P, Q \rangle$ ensures that distinct morphisms in $\cE$ lying over the same $f \in \cC(A,B)$ have distinct images in $\cD$.  This is precisely what guarantees that $Ff$ is a \emph{set} of morphisms rather than a multiset.
+\end{remark}
+
+\begin{proposition}\label{prop:bospan}
+Relational functors $\cC \rightsquigarrow \cD$ correspond bijectively to isomorphism classes of relational bo-spans $\cC \leftarrow \cE \to \cD$.
+\end{proposition}
+
+\begin{proof}
+\textit{(Functor $\Rightarrow$ span.)}
+Given $F\colon \cC \rightsquigarrow \cD$, form the \emph{graph category} $\cE_F$ with $\Ob(\cE_F) = \Ob(\cC)$ and
+\[
+    \cE_F(A,B) = \bigl\{(f,\varphi) \mid f \in \cC(A,B),\; \varphi \in Ff\bigr\},
+\]
+with component-wise composition (well-defined by~\ref{ax:comp}) and identities $(\id_A, \id_{F_0 A})$ (existing by~\ref{ax:id}).  The projections $P(f,\varphi)=f$ and $Q(f,\varphi)=\varphi$ give a bo-span; injectivity of $\langle P, Q\rangle$ is immediate.
+
+\smallskip\noindent
+\textit{(Span $\Rightarrow$ functor.)}
+Given a bo-span $(\cE, P, Q)$, identify objects of $\cE$ with those of $\cC$ via $P$ and set $F_0(A) = Q_0(A)$ and $Ff = \{Q(e) \mid P(e) = f\}$.  Functoriality of $Q$ gives~\ref{ax:id}, and the lifting of composites in $\cE$ gives~\ref{ax:comp}.  Faithfulness of $\langle P,Q\rangle$ ensures the two constructions are mutually inverse up to isomorphism of spans.
+\end{proof}
+
+\section{Transformations}\label{sec:trans}
+
+\subsection{Intrinsic definition}
+
+\begin{definition}\label{def:reltrans}
+Let $F, G\colon \cC \rightsquigarrow \cD$ be relational functors.  A \emph{relational natural transformation} $\alpha\colon F \Rightarrow G$ is a family of subsets $\alpha_A \subseteq \cD(FA, GA)$ for each $A \in \Ob(\cC)$.  It is called:
+\begin{itemize}[leftmargin=2em]
+    \item \emph{lax} if $\alpha_B \circ Ff \subseteq Gf \circ \alpha_A$ for all $f\colon A \to B$;
+    \item \emph{oplax} if $Gf \circ \alpha_A \subseteq \alpha_B \circ Ff$ for all $f\colon A \to B$;
+    \item \emph{strict} if both inclusions hold (i.e.\ equality).
+\end{itemize}
+\end{definition}
+
+\begin{remark}\label{rmk:laxunpack}
+Unpacking the lax condition: for every $\varphi \in Ff$ and $\sigma \in \alpha_B$, there exist $\psi \in Gf$ and $\tau \in \alpha_A$ with $\sigma \circ \varphi = \psi \circ \tau$.
+\end{remark}
+
+\subsection{Enriched definition}
+
+Under the correspondence of \cref{prop:enriched}, relational natural transformations are precisely the transformations between lax $\cP$-functors in the 2-category $\cP\cD$-$\Cat$, where the 2-cells in the quantaloid $\cP\cD$ are subset inclusions.  The lax, oplax, and strict conditions of \cref{def:reltrans} correspond directly to lax, oplax, and pseudo naturality respectively.
+
+\begin{remark}\label{rmk:pseudo}
+Since the 2-cells in the quantaloid $\cP\cD$ form a partial order (inclusion is antisymmetric), every invertible 2-cell is an identity.  Pseudo-naturality therefore collapses to strict naturality.
+\end{remark}
+
+\subsection{Geometric definition via bo-spans}\label{ssec:transbospan}
+
+The cleanest formulation of the geometric picture exploits the recursive structure: transformations between relational functors are themselves relational functors between graph categories.
+
+\begin{definition}\label{def:transbospan}
+Let $(\cE_F, P_F, Q_F)$ and $(\cE_G, P_G, Q_G)$ be bo-spans representing $F, G\colon \cC \rightsquigarrow \cD$.  A \emph{lax transformation of bo-spans} is a relational functor $\Phi\colon \cE_F \rightsquigarrow \cE_G$ such that $P_G \circ \Phi = P_F$ strictly on objects and arrows (i.e.\ for every $u \in \cE_F$ and every $v \in \Phi(u)$, we have $P_G(v) = P_F(u)$).
+\end{definition}
+
+\begin{proposition}\label{prop:transbospan}
+Lax relational natural transformations $\alpha\colon F \Rightarrow G$ correspond bijectively to relational functors $\Phi\colon \cE_F \rightsquigarrow \cE_G$ over $\cC$ as in \cref{def:transbospan}.
+\end{proposition}
+
+\begin{proof}
+\textit{($\alpha \Rightarrow \Phi$.)}
+Given $\alpha$, define $\Phi_0 = \id$ (both graph categories have object set $\Ob(\cC)$) and
+\[
+    \Phi(u) \;=\; \bigl\{v \in \cE_G(A,B) \;\big|\; P_G(v) = P_F(u) \text{ and } \exists\, \tau \in \alpha_A,\, \sigma \in \alpha_B \text{ with } \sigma \circ Q_F(u) = Q_G(v) \circ \tau \bigr\}
+\]
+for $u\colon A \to B$ in $\cE_F$.  The relational functor axioms for $\Phi$ follow from the lax naturality of $\alpha$ together with the relational functor axioms for $F$ and $G$.
+
+\smallskip\noindent
+\textit{($\Phi \Rightarrow \alpha$.)}
+Given $\Phi$ over $\cC$, set $\alpha_A = \{Q_G(w) \mid w \in \Phi(\id_A)\}$ for each $A \in \Ob(\cC)$.  Since $\Phi$ preserves identities, $\id_{GA} \in \alpha_A$.  Lax naturality follows from the composition axiom for $\Phi$: given $\varphi \in Ff$ and $\sigma \in \alpha_B$, lifting through $\Phi$ produces the required factorisations in $\cD$.
+\end{proof}
+
+\begin{remark}\label{rmk:recursive}
+Applying \cref{prop:bospan} to $\Phi$ yields a bo-span $\cE_F \leftarrow \cT \to \cE_G$ where $\cT = \cE_\Phi$ is the graph category of $\Phi$.  The condition that $\Phi$ lies over $\cC$ translates to the strict triangle $P_F \circ \pi_1 = P_G \circ \pi_2$ and the composite $P_\cT = P_F \circ \pi_1$ being bo.  Thus the geometric picture of transformations is: a span of graph categories over $\cC$, with the span itself arising from a relational functor.
+\end{remark}
+
+
+
+
+
+\end{document}
